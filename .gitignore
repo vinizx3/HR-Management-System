@@ -1,0 +1,82 @@
+# =========================
+# Spring Boot / Maven
+# =========================
+HELP.md
+target/
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+.mvn/
+mvnw
+mvnw.cmd
+
+# =========================
+# IDE - IntelliJ IDEA
+# =========================
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# =========================
+# IDE - STS / Eclipse
+# =========================
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+# =========================
+# IDE - NetBeans
+# =========================
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# =========================
+# VS Code
+# =========================
+.vscode/
+
+# =========================
+# Environment Variables
+# =========================
+.env
+.env.*
+
+# Spring local/prod configs
+application-local.properties
+application-local.yml
+application-prod.properties
+application-prod.yml
+
+# =========================
+# Logs
+# =========================
+*.log
+
+# =========================
+# OS / System files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Docker
+# =========================
+**/docker-volume/
+
+# =========================
+# Angular / Node / Frontend
+# =========================
+**/node_modules/
+**/dist/
+**/.angular/

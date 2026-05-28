@@ -1,0 +1,84 @@
+<div class="login-wrapper">
+
+    <div class="login-left">
+        <div class="login-left-content">
+            <div class="logo-big">HR</div>
+            <h2 class="tagline">Gestão de pessoas, <br>simplificada.</h2>
+        </div>
+    </div>
+
+    <div class="login-right">
+        <div class="login-card">
+
+            <div class="login-icon">
+                <i class="bi bi-people-fill"></i>
+            </div>
+
+            <h1 class="login-title">Bem-vindo de volta</h1>
+
+            @if (errorMessage) {
+                <div class="alert alert-banner py2 px-3 mb-3 rounded-3">
+                    <i class="bi bi-exclamation-circle me-2"></i>{{ errorMessage }}
+                </div>
+            }
+
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+                <div class="form-group">
+                    <label class="form-label">E-mail</label>
+                    <div class="input-wrapper">
+                        <i class="bi bi-envelope input-icon"></i>
+                        <input 
+                         type="email"
+                         class="form-control custom-input"
+                         placegholder="seu@email.com"
+                         formControlName="email"
+                         [class.is.invalid]="email?.invalid && email?.touched"
+                        />  
+                    </div>
+
+                    @if (email?.invalid && email?.touched) {
+                        <div class="invalid feedback d-block">E-mail inválido.</div>
+                    }
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Senha</label>
+                    <div class="input-wrapper">
+                        <i class="bi bi-lock input-icon"></i>
+                        <input
+                         [type]="showPassword ? 'text' : 'password'"
+                         class="form-control custom-input"
+                         placeholder="••••••••••"
+                         formControlName="password"
+                         [class.is.invalid]="password?.invalid && password?.touched"
+                        />
+                        <button type="button" class="toggle-password" (click)="togglePassword()">
+                            <i [class]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+                        </button>
+                    </div>
+                    @if (password?.invalid && password?.touched) {
+                        <div class="invalid-feedback d-block">Senha obrigatória.</div>
+                    }
+                </div>
+
+                <button
+                 type="submit"
+                 class="btn-login"
+                 [disabled]="isLoading">
+                 @if (isLoading) {
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                    Entrando... 
+                 } @else {
+                    Entrar
+                 }
+                </button>
+
+            </form>
+
+            <p class="login-footer">© 2026 HR System. Todos os direitos reservados.</p>
+
+        </div>
+    </div>
+
+</div>

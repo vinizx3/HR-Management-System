@@ -1,0 +1,28 @@
+<header class="topbar">
+
+    <div class="topbar-left">
+        <span class="topbar-title">HR System</span>
+    </div>
+
+    <div class="topbar-right">
+        
+        <a routerLink="/notifications" class="notifications-btn">
+            <i class="bi bi-bell"></i>
+            <span></span>
+            @if (unreadCount > 0) {
+                <span class="badge">{{ unreadCount }}</span>
+            }
+        </a>
+
+        <div class="user-info">
+            <div class="avatar">
+                {{ employeeName.charAt(0) }}
+            </div>
+            <div class="user-details">
+                <span class="user-name">{{ employeeName }}</span>
+                <span class="user-role"> {{ role }}</span>
+            </div>
+        </div>
+        
+    </div>
+</header>
