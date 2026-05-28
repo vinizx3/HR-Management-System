@@ -37,7 +37,7 @@ jobs:
         image: confluentinc/cp-kafka:7.5.0
         env:
           KAFKA_BROKER_ID: 1
-          KAFKA_ZOOKEEPER_CONNECT: localhost:2181
+          KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
           KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
           KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
           KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
@@ -56,11 +56,8 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Debug structure
-        run: find . -name "pom.xml" -type f
-
       - name: Build and run tests
-        working-directory: rh/rh
+        working-directory: rh-backend/rh
         env:
           SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/rh_db
           SPRING_DATASOURCE_USERNAME: postgres
@@ -74,4 +71,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-results
-          path: rh/rh/target/surefire-reports/
+          path: rh-backend/rh/target/surefire-reports/
