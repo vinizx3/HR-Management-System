@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { HttpClient } from '@angular/common/http';
 
@@ -18,7 +18,8 @@ export class Topbar implements OnInit{
 
   constructor(
     private authService: AuthService,
-    private http: HttpClient
+    private http: HttpClient,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -27,13 +28,17 @@ export class Topbar implements OnInit{
   }
 
   private loadProfile(): void {
-    this.http.get<any>('api/employee/me').subscribe({
-      next: (employee) => {
-        this.employeeName = employee.name;
-        this.role = employee.role ===  'HR_MANAGER' ? 'RH Manager' : 'Funcionario';
-      }
-    });
-  }
+  this.http.get<any>('api/employees/me').subscribe({
+    next: (employee) => {
+      this.employeeName = employee.name;
+      this.role = employee.role === 'HR_MANAGER' ? 'RH Manager' : 'Funcionario';
+    },
+    error: (err) => {
+      console.error('Erro ao carregar perfil, deslogando...', err);
+      this.authService.logout();
+    }
+  });
+}
 
   private loadUnreadCount(): void {
     this.http.get<number>('api/notifications/me/unread-count').subscribe({

@@ -44,9 +44,9 @@ export class Login {
     this.authService.login(this.loginForm.value).subscribe({
       next: () => {
         if (this.authService.isHrManager()) {
-          this.router.navigate(['/hr/dashboards']);
+          this.router.navigate(['/hr/dashboard']);
         } else {
-          this.router.navigate(['/employee/dashboards']);
+          this.router.navigate(['/employee/dashboard']);
         }
       },
       error: (err) => {
