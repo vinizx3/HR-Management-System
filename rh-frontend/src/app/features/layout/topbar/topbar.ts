@@ -28,20 +28,21 @@ export class Topbar implements OnInit{
   }
 
   private loadProfile(): void {
-  this.http.get<any>('api/employees/me').subscribe({
+  this.http.get<any>('/api/employees/me').subscribe({
     next: (employee) => {
       this.employeeName = employee.name;
       this.role = employee.role === 'HR_MANAGER' ? 'RH Manager' : 'Funcionario';
     },
     error: (err) => {
-      console.error('Erro ao carregar perfil, deslogando...', err);
-      this.authService.logout();
+      console.error('Erro ao carregar perfil na Topbar:', err);
+      this.employeeName = 'Usuário';
+      this.role = 'Fazer Login';
     }
   });
 }
 
   private loadUnreadCount(): void {
-    this.http.get<number>('api/notifications/me/unread-count').subscribe({
+    this.http.get<number>('/api/notifications/me/unread-count').subscribe({
       next: (count) => this.unreadCount = count
     });
   }

@@ -1,5 +1,7 @@
-import { Routes } from '@angular/router';
+import { Router, Routes } from '@angular/router';
 import { authGuard, hrGuard } from './core/guards/auth.guard';
+import { inject } from '@angular/core';
+import { AuthService } from './core/services/auth.service';
 
 export const routes: Routes = [
   {
@@ -17,12 +19,12 @@ export const routes: Routes = [
         path: 'hr/dashboard',
         canActivate: [hrGuard],
         loadComponent: () =>
-          import('./features/hr/dashboard/dashboard').then(m => m.Dashboard)
+          import('./features/employee/dashboard/EmployeeDashboard').then(m => m.EmployeeDashboard)
       },
       {
         path: 'employee/dashboard',
         loadComponent: () =>
-          import('./features/hr/dashboard/dashboard').then(m => m.Dashboard)
+          import('./features/employee/dashboard/EmployeeDashboard').then(m => m.EmployeeDashboard)
       },
       {
         path: 'timeclock',
@@ -41,8 +43,11 @@ export const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: 'employee/dashboard',
-        pathMatch: 'full'
+        pathMatch: 'full',
+        redirectTo: () => {
+          const authService = inject(AuthService);
+          return authService.isHrManager() ? 'hr/dashboard' : 'employee/dashboard';
+        }
       }
     ]
   },

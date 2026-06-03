@@ -42,7 +42,10 @@ export class Login {
     this.errorMessage = '';
 
     this.authService.login(this.loginForm.value).subscribe({
-      next: () => {
+      next: (response) => {
+        console.log('[Login] É Gestor de RH?:', this.authService.isHrManager());
+        console.log('[Login] Role atual do Token:', this.authService.getRole());
+
         if (this.authService.isHrManager()) {
           this.router.navigate(['/hr/dashboard']);
         } else {

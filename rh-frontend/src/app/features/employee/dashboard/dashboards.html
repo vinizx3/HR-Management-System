@@ -1,0 +1,127 @@
+<div class="dashboard"> 
+
+    <div class="header">
+        <div>
+            <h1 class="greeting">{{ getGreeting() }}, {{ employeeName }}! 👋</h1>
+        <p class="date">{{ today | date:'EEEE, dd \'de\' MMMM \'de\' yyyy' : '' : 'pt-BR' }}</p>
+        </div>
+    </div>
+
+    <div class="hero-card" [class.clocked-in]="isClockedIn">
+        <div class="hero-info">
+            <h2 class="hero-title">
+                @if (isClockedIn) {
+                    <span class="status-dot active"></span>
+                    Trabalhando desde {{ todayRecord?.clockedIn }}
+                } @else {
+                    <span class="status-dot"></span>
+                    Fora do expediente
+                }
+            </h2>
+            <p class="hero-subtitle">Tenha um ótimo dia de trabalho!</p>
+        </div>
+
+        <button class="clock-btn"
+        [class.clock-out]="isClockedIn"
+        (click)="isClockedIn ? clockOut() : clockIn()">
+        <span> {{ isClockedIn ? 'ENCERRAR' : 'BATER PONTO' }} </span>
+        </button>
+    </div>
+
+    <div class="kpi-grid">
+
+        <div class="kpi-card">
+            <div class="kpi-icon" style="background-color: #EFF6FF">
+                <i class="bi bi-clock" style="color: #3B82F6"></i>
+            </div>
+            <div class="kpi-info">
+                <span class="kpi-value">{{ todayRecord?.workedTime || '0h 0min' }}</span>
+                <span class="kpi-label">Horas hoje</span>
+            </div>
+            <div class="kpi-progess">
+                <div class="progress-bar">
+                    <div class="progess-fill" [style.width.%]="getProgressPercent()"></div>
+                </div>
+                <span class="progress-label">de 8h</span>
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-icon" style="background-color: #F0FDF4">
+                <i class="bi bi-graph-up-arrow" style="color: #10B981"></i>
+            </div>
+            <div class="kpi-info">
+                <span class="kpi-value" style="color: #10B981">
+                    {{ overtimeBalance?.formatedBalance || '0h 0min' }}
+                </span>
+                <span class="kpi-label">Banco de horas</span>
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-icon" style="background: #F5F3FF">
+                <i class="bi bi-calendar-event" style="color: #8B5CF6"></i>
+            </div>
+        
+            <div class="kpi-info">
+            @if (nextVacation) {
+                <span class="kpi-value" style="font-size: 14px">
+                {{ nextVacation.startDate }} – {{ nextVacation.endDate }}
+                </span>
+                <span class="kpi-label">Próximas férias</span>
+            } @else {
+                <span class="kpi-value" style="font-size: 14px; color: #64748B">Sem férias agendadas</span>
+                <span class="kpi-label">Próximas férias</span>
+            }
+            </div>
+        </div>
+    </div>
+
+    <div class="section-card">
+    <h3 class="section-title">
+      <i class="bi bi-calendar-week me-2"></i>
+      Registros da semana
+    </h3>
+
+    @if (isLoading) {
+      <div class="text-center py-4">
+        <div class="spinner-border text-primary" role="status"></div>
+      </div>
+    } @else if (weekRecords.length === 0) {
+      <div class="empty-state">
+        <i class="bi bi-clock-history"></i>
+        <p>Nenhum registro encontrado</p>
+      </div>
+    } @else {
+      <div class="records-table">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Entrada</th>
+              <th>Saída</th>
+              <th>Total</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (record of weekRecords; track record.id) {
+              <tr>
+                <td>{{ record.date }}</td>
+                <td>{{ record.clockIn || '—' }}</td>
+                <td>{{ record.clockOut || '—' }}</td>
+                <td>{{ record.workedTime || '—' }}</td>
+                <td>
+                  <span class="badge-status" [class]="getBadgeClass(record.status)">
+                    {{ getStatusLabel(record.status) }}
+                  </span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+
+</div>

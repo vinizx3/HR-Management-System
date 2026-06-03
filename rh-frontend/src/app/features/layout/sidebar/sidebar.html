@@ -7,7 +7,9 @@
 
     <ul class="sidebar-nav">
         <li>
-            <a routerLink="/employee/dashboard" routerLinkActive="active" class="nav-item">
+            <a [routerLink]="authService.isHrManager() ? '/hr/dashboard' : '/employee/dashboard'" 
+            routerLinkActive="active" 
+            class="nav-item">
             <i class="bi bi-house"></i>
             <span>Dashboard</span>
         </a>
