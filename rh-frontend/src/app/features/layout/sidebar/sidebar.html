@@ -1,5 +1,4 @@
 <nav class="sidebar">
-
     <div class="sidebar-logo">
         <i class="bi bi-people-fill logo-icon"></i>
         <span class="logo-text">HR System</span>
@@ -7,38 +6,56 @@
 
     <ul class="sidebar-nav">
         <li>
-            <a [routerLink]="authService.isHrManager() ? '/hr/dashboard' : '/employee/dashboard'" 
-            routerLinkActive="active" 
-            class="nav-item">
-            <i class="bi bi-house"></i>
-            <span>Dashboard</span>
-        </a>
+            <a [routerLink]="authService.isHrManager() ? '/hr/dashboard' : '/employee/dashboard'"
+               routerLinkActive="active"
+               class="nav-item">
+                <i class="bi bi-house"></i>
+                <span>Dashboard</span>
+            </a>
         </li>
         <li>
             <a routerLink="/timeclock" routerLinkActive="active" class="nav-item">
-            <i class="bi bi-clock"></i>
-            <span>Ponto</span>
+                <i class="bi bi-clock"></i>
+                <span>Ponto</span>
             </a>
         </li>
         <li>
             <a routerLink="/vacations" routerLinkActive="active" class="nav-item">
-            <i class="bi bi-umbrella"></i>
-            <span>Férias</span>
+                <i class="bi bi-umbrella"></i>
+                <span>Férias</span>
             </a>
         </li>
+
+        @if (authService.isHrManager()) {
+            <li>
+                <a routerLink="/hr/employees" routerLinkActive="active" class="nav-item">
+                    <i class="bi bi-people"></i>
+                    <span>Funcionários</span>
+                </a>
+            </li>
+        }
+
         <li>
             <a routerLink="/notifications" routerLinkActive="active" class="nav-item">
-            <i class="bi bi-bell"></i>
-            <span>Notificações</span>
+                <i class="bi bi-bell"></i>
+                <span>Notificações</span>
             </a>
         </li>
+
+        @if (authService.isHrManager()) {
+            <li>
+                <a routerLink="/hr/settings" routerLinkActive="active" class="nav-item">
+                    <i class="bi bi-gear"></i>
+                    <span>Configurações</span>
+                </a>
+            </li>
+        }
     </ul>
 
     <div class="sidebar-footer">
         <button class="nav-item logout-btn w-100" (click)="logout()">
-        <i class="bi bi-box-arrow-left"></i>
-        <span>Sair</span>
+            <i class="bi bi-box-arrow-left"></i>
+            <span>Sair</span>
         </button>
     </div>
-
 </nav>

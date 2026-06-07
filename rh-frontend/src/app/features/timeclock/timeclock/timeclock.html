@@ -1,1 +1,191 @@
-<p>timeclock works!</p>
+<div class="timeclock-page">
+
+  <div class="clock-card">
+    <div class="clock-left">
+      <div class="digital-clock">{{ currentTime }}</div>
+      <div class="clock-date">{{ currentDate }}</div>
+    </div>
+    <div class="clock-right">
+      <button
+        class="btn-clock"
+        [class.btn-clock-out]="isClockedIn"
+        [disabled]="isClockingIn"
+        (click)="clockAction()">
+        @if (isClockingIn) {
+          <span class="spinner-border spinner-border-sm"></span>
+        } @else {
+          <i class="bi" [ngClass]="isClockedIn ? 'bi-stop-circle-fill' : 'bi-play-circle-fill'"></i>
+        }
+        <span>{{ isClockedIn ? 'ENCERRAR' : 'BATER PONTO' }}</span>
+      </button>
+      <span class="clock-status" [class.status-in]="isClockedIn" [class.status-out]="!isClockedIn">
+        <i class="bi bi-circle-fill"></i>
+        {{ isClockedIn ? 'Em andamento' : 'Fora do expediente' }}
+      </span>
+    </div>
+  </div>
+
+  <div class="records-card">
+    <div class="records-header">
+      <h2 class="records-title">
+        <i class="bi bi-calendar3"></i>
+        Histórico de registros
+      </h2>
+      <span class="records-count">{{ records.length }} registros</span>
+    </div>
+
+    @if (isLoading) {
+      <div class="loading">
+        <div class="spinner-border text-primary" role="status"></div>
+      </div>
+    } @else if (records.length === 0) {
+      <div class="empty-state">
+        <i class="bi bi-clock-history"></i>
+        <p>Nenhum registro encontrado</p>
+      </div>
+    } @else {
+      <div class="table-wrapper">
+        <table class="records-table">
+          <thead>
+            <tr>
+              @if (isHrManager) { <th>Funcionário</th> }
+              <th>Data</th>
+              <th>Entrada</th>
+              <th>Saída</th>
+              <th>Total</th>
+              <th>Horas extras</th>
+              <th>Status</th>
+              @if (!isHrManager) { <th>Ajuste</th> }
+            </tr>
+          </thead>
+          <tbody>
+            @for (record of records; track record.id) {
+              <tr>
+                @if (isHrManager) {
+                  <td class="td-name">{{ record.employeeName }}</td>
+                }
+                <td class="td-date">{{ record.date }}</td>
+                <td>
+                  <div class="td-time">
+                    <i class="bi bi-box-arrow-in-right text-success"></i>
+                    {{ record.clockIn }}
+                  </div>
+                </td>
+                <td>
+                  @if (record.clockOut) {
+                    <div class="td-time">
+                      <i class="bi bi-box-arrow-right text-danger"></i>
+                      {{ record.clockOut }}
+                    </div>
+                  } @else {
+                    <span class="text-muted">—</span>
+                  }
+                </td>
+                <td class="td-total">{{ record.workedTime ?? '—' }}</td>
+                <td class="td-overtime" [class.has-overtime]="record.overtimeMinutes > 0">
+                  <span class="overtime" [class.is-empty]="record.overtimeMinutes <= 0">
+                    {{ record.overtimeMinutes > 0 ? '+' + record.overtimeTime : '——' }}
+                  </span>
+                </td>
+                <td>
+                  <span class="badge" [ngClass]="getStatusClass(record.status)">
+                    {{ getStatusLabel(record.status) }}
+                  </span>
+                </td>
+                @if (!isHrManager) {
+                  <td>
+                    @if (record.status === 'CLOSED') {
+                      <button class="btn-adjust" (click)="openAdjustModal(record)" title="Solicitar ajuste">
+                        <i class="bi bi-pencil-square"></i>
+                      </button>
+                    } @else {
+                      <span class="text-muted">—</span>
+                    }
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+
+  @if (showAdjustModal) {
+  <div class="modal-overlay" (click)="closeAdjustModal()">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <h3>Solicitar ajuste de ponto</h3>
+        <button class="btn-close-modal" (click)="closeAdjustModal()">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        @if (selectedRecord) {
+          <div class="adjust-info">
+            <i class="bi bi-info-circle-fill"></i>
+            Registro de <strong>{{ selectedRecord.date }}</strong> —
+            atual: {{ selectedRecord.clockIn }} → {{ selectedRecord.clockOut ?? '—' }}
+          </div>
+        }
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nova entrada <span class="required">*</span></label>
+            <input
+              type="datetime-local"
+              class="form-input"
+              [(ngModel)]="adjustForm.requestedClockIn" />
+          </div>
+          <div class="form-group">
+            <label>Nova saída <span class="required">*</span></label>
+            <input
+              type="datetime-local"
+              class="form-input"
+              [(ngModel)]="adjustForm.requestedClockOut" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Motivo <span class="required">*</span></label>
+          <textarea
+            class="form-input form-textarea"
+            [(ngModel)]="adjustForm.reason"
+            placeholder="Descreva o motivo do ajuste..."
+            rows="3"></textarea>
+        </div>
+
+        @if (adjustError) {
+          <div class="alert-error">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            {{ adjustError }}
+          </div>
+        }
+
+        @if (adjustSuccess) {
+          <div class="alert-success">
+            <i class="bi bi-check-circle-fill"></i>
+            {{ adjustSuccess }}
+          </div>
+        }
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="closeAdjustModal()">Cancelar</button>
+        <button class="btn-save" (click)="submitAdjustment()" [disabled]="isSubmittingAdjust">
+          @if (isSubmittingAdjust) {
+            <span class="spinner-border spinner-border-sm"></span>
+          } @else {
+            <i class="bi bi-send-fill"></i>
+          }
+          Enviar solicitação
+        </button>
+      </div>
+
+    </div>
+  </div>
+  }
+
+</div>

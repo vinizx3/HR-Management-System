@@ -17,17 +17,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.time.Clock;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -52,7 +47,7 @@ public class TimeClockServiceTest {
     public void setup() {
 
         clock = Clock.fixed(
-                LocalDate.of(2026,5,17)
+                LocalDate.of(2026, 5, 17)
                         .atStartOfDay(ZoneId.systemDefault())
                         .toInstant(),
                 ZoneId.systemDefault()
@@ -66,6 +61,7 @@ public class TimeClockServiceTest {
         );
 
         employeeId = UUID.randomUUID();
+
         employee = new Employee();
         ReflectionTestUtils.setField(employee, "id", employeeId);
         employee.setName("John Doe");
@@ -78,9 +74,11 @@ public class TimeClockServiceTest {
         when(employeeRepository.findByEmail("john@test.com"))
                 .thenReturn(Optional.of(employee));
 
-        when(timeRecordRepository.findByEmployeeIdAndDate(
-                employeeId, LocalDate.now(clock)))
-                .thenReturn(Optional.empty());
+        when(timeRecordRepository.findByEmployeeIdAndDateAndStatus(
+                eq(employeeId),
+                eq(LocalDate.now(clock)),
+                eq(TimeRecordStatus.OPEN)
+        )).thenReturn(Optional.empty());
 
         when(timeRecordRepository.save(any(TimeRecord.class)))
                 .thenAnswer(inv -> {
@@ -93,6 +91,7 @@ public class TimeClockServiceTest {
 
         assertNotNull(dto);
         assertEquals(TimeRecordStatus.OPEN, dto.status());
+
         verify(timeRecordRepository).save(any(TimeRecord.class));
     }
 
@@ -102,9 +101,11 @@ public class TimeClockServiceTest {
         when(employeeRepository.findByEmail("john@test.com"))
                 .thenReturn(Optional.of(employee));
 
-        when(timeRecordRepository.findByEmployeeIdAndDate(
-                employeeId, LocalDate.now(clock)))
-                .thenReturn(Optional.of(new TimeRecord()));
+        when(timeRecordRepository.findByEmployeeIdAndDateAndStatus(
+                eq(employeeId),
+                eq(LocalDate.now(clock)),
+                eq(TimeRecordStatus.OPEN)
+        )).thenReturn(Optional.of(new TimeRecord()));
 
         assertThrows(BusinessException.class,
                 () -> timeClockService.clockIn("john@test.com"));
@@ -125,16 +126,20 @@ public class TimeClockServiceTest {
         when(employeeRepository.findByEmail("john@test.com"))
                 .thenReturn(Optional.of(employee));
 
-        when(timeRecordRepository.findByEmployeeIdAndDate(
-                employeeId, LocalDate.now(clock)))
-                .thenReturn(Optional.of(openRecord));
+        when(timeRecordRepository.findByEmployeeIdAndDateAndStatus(
+                eq(employeeId),
+                eq(LocalDate.now(clock)),
+                eq(TimeRecordStatus.OPEN)
+        )).thenReturn(Optional.of(openRecord));
 
-        when(timeRecordRepository.save(any())).thenReturn(openRecord);
+        when(timeRecordRepository.save(any(TimeRecord.class)))
+                .thenReturn(openRecord);
 
-        TimeRecordResponseDTO responseDTO = timeClockService.clockOut("john@test.com");
+        TimeRecordResponseDTO responseDTO =
+                timeClockService.clockOut("john@test.com");
 
         assertNotNull(responseDTO);
-        assertEquals(TimeRecordStatus.CLOSED,openRecord.getStatus());
+        assertEquals(TimeRecordStatus.CLOSED, openRecord.getStatus());
         assertNotNull(openRecord.getClockOut());
     }
 
@@ -144,9 +149,11 @@ public class TimeClockServiceTest {
         when(employeeRepository.findByEmail("john@test.com"))
                 .thenReturn(Optional.of(employee));
 
-        when(timeRecordRepository.findByEmployeeIdAndDate(
-                employeeId, LocalDate.now(clock)))
-                .thenReturn(Optional.empty());
+        when(timeRecordRepository.findByEmployeeIdAndDateAndStatus(
+                eq(employeeId),
+                eq(LocalDate.now(clock)),
+                eq(TimeRecordStatus.OPEN)
+        )).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class,
                 () -> timeClockService.clockOut("john@test.com"));
@@ -155,17 +162,16 @@ public class TimeClockServiceTest {
     @Test
     public void shouldThrowWhenClockOutAlreadyClosed() {
 
-        TimeRecord closedRecord = new TimeRecord();
-        closedRecord.setStatus(TimeRecordStatus.CLOSED);
-
         when(employeeRepository.findByEmail("john@test.com"))
                 .thenReturn(Optional.of(employee));
 
-        when(timeRecordRepository.findByEmployeeIdAndDate(
-                employeeId, LocalDate.now(clock)))
-                .thenReturn(Optional.of(closedRecord));
+        when(timeRecordRepository.findByEmployeeIdAndDateAndStatus(
+                eq(employeeId),
+                eq(LocalDate.now(clock)),
+                eq(TimeRecordStatus.OPEN)
+        )).thenReturn(Optional.empty());
 
-        assertThrows(BusinessException.class,
+        assertThrows(ResourceNotFoundException.class,
                 () -> timeClockService.clockOut("john@test.com"));
     }
 
@@ -181,21 +187,29 @@ public class TimeClockServiceTest {
 
         Clock fixedClockOut = Clock.fixed(
                 LocalDateTime.of(2026, 5, 17, 17, 30)
-                        .atZone(ZoneId.systemDefault()).toInstant(),
+                        .atZone(ZoneId.systemDefault())
+                        .toInstant(),
                 ZoneId.systemDefault()
         );
 
         TimeClockService serviceWithCustomClock = new TimeClockService(
-                timeRecordRepository, employeeRepository, overtimeBalanceService, fixedClockOut
+                timeRecordRepository,
+                employeeRepository,
+                overtimeBalanceService,
+                fixedClockOut
         );
 
         when(employeeRepository.findByEmail("john@test.com"))
                 .thenReturn(Optional.of(employee));
 
-        when(timeRecordRepository.findByEmployeeIdAndDate(any(), any()))
-                .thenReturn(Optional.of(openRecord));
+        when(timeRecordRepository.findByEmployeeIdAndDateAndStatus(
+                any(UUID.class),
+                any(LocalDate.class),
+                eq(TimeRecordStatus.OPEN)
+        )).thenReturn(Optional.of(openRecord));
 
-        when(timeRecordRepository.save(any())).thenReturn(openRecord);
+        when(timeRecordRepository.save(any()))
+                .thenReturn(openRecord);
 
         serviceWithCustomClock.clockOut("john@test.com");
 
@@ -210,26 +224,34 @@ public class TimeClockServiceTest {
         ReflectionTestUtils.setField(openRecord, "id", UUID.randomUUID());
         openRecord.setEmployee(employee);
         openRecord.setDate(LocalDate.now(clock));
-        openRecord.setClockIn(LocalDateTime.of(2026,5,17,8,0));
+        openRecord.setClockIn(LocalDateTime.of(2026, 5, 17, 8, 0));
         openRecord.setStatus(TimeRecordStatus.OPEN);
 
         Clock fixedClockOut = Clock.fixed(
-                LocalDateTime.of(2026,5,17,16,5)
-                        .atZone(ZoneId.systemDefault()).toInstant(),
+                LocalDateTime.of(2026, 5, 17, 16, 5)
+                        .atZone(ZoneId.systemDefault())
+                        .toInstant(),
                 ZoneId.systemDefault()
         );
 
         TimeClockService serviceWithCustomClock = new TimeClockService(
-                timeRecordRepository, employeeRepository, overtimeBalanceService, fixedClockOut
+                timeRecordRepository,
+                employeeRepository,
+                overtimeBalanceService,
+                fixedClockOut
         );
 
         when(employeeRepository.findByEmail("john@test.com"))
                 .thenReturn(Optional.of(employee));
 
-        when(timeRecordRepository.findByEmployeeIdAndDate(any(), any()))
-                .thenReturn(Optional.of(openRecord));
+        when(timeRecordRepository.findByEmployeeIdAndDateAndStatus(
+                any(UUID.class),
+                any(LocalDate.class),
+                eq(TimeRecordStatus.OPEN)
+        )).thenReturn(Optional.of(openRecord));
 
-        when(timeRecordRepository.save(any())).thenReturn(openRecord);
+        when(timeRecordRepository.save(any()))
+                .thenReturn(openRecord);
 
         serviceWithCustomClock.clockOut("john@test.com");
 

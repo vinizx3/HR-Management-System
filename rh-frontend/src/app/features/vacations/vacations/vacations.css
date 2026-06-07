@@ -1,0 +1,314 @@
+.vacations-page {
+  padding: 32px;
+}
+
+.page-header {
+  margin-bottom: 24px;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1E293B;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.page-title i {
+  color: #10B981;
+}
+
+.vacations-layout {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.vacations-layout.hr-layout {
+  grid-template-columns: 1fr;
+}
+
+/* Cards */
+.form-card,
+.history-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(15,23,42,.06);
+  padding: 24px;
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1E293B;
+  margin: 0 0 20px;
+}
+
+/* Form */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.form-input {
+  border: 1.5px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 14px;
+  color: #1E293B;
+  outline: none;
+  transition: border .15s;
+  width: 100%;
+}
+
+.form-input:focus {
+  border-color: #3B82F6;
+}
+
+.preview-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #EFF6FF;
+  border: 1px solid #BFDBFE;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #1D4ED8;
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+
+.alert-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #DC2626;
+  margin-bottom: 16px;
+}
+
+.alert-success {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ECFDF5;
+  border: 1px solid #6EE7B7;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #059669;
+  margin-bottom: 16px;
+}
+
+.btn-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  background: #1E3A5F;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+}
+
+.btn-submit:hover:not(:disabled) {
+  background: #2C4F7C;
+}
+
+.btn-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Table */
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.vacations-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.vacations-table thead tr {
+  border-bottom: 2px solid #F1F5F9;
+}
+
+.vacations-table th {
+  text-align: left;
+  padding: 10px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #94A3B8;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  white-space: nowrap;
+}
+
+.vacations-table tbody tr {
+  border-bottom: 1px solid #F8FAFC;
+  transition: background .15s;
+}
+
+.vacations-table tbody tr:hover {
+  background: #F8FAFC;
+}
+
+.vacations-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.vacations-table td {
+  padding: 14px 16px;
+  color: #1E293B;
+}
+
+.td-name {
+  font-weight: 600;
+}
+
+.td-period {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.td-days {
+  color: #64748B;
+}
+
+.td-date {
+  color: #64748B;
+  font-size: 13px;
+}
+
+.td-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge-warning {
+  background: #FEF3C7;
+  color: #D97706;
+}
+
+.badge-success {
+  background: #ECFDF5;
+  color: #10B981;
+}
+
+.badge-danger {
+  background: #FEF2F2;
+  color: #EF4444;
+}
+
+.badge-neutral {
+  background: #F1F5F9;
+  color: #64748B;
+}
+
+.btn-approve,
+.btn-reject {
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  border: 1.5px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all .15s;
+  font-size: 13px;
+}
+
+.btn-approve {
+  background: #ECFDF5;
+  border-color: #6EE7B7;
+  color: #10B981;
+}
+
+.btn-approve:hover {
+  background: #10B981;
+  color: #fff;
+  border-color: #10B981;
+}
+
+.btn-reject {
+  background: #FEF2F2;
+  border-color: #FCA5A5;
+  color: #EF4444;
+}
+
+.btn-reject:hover {
+  background: #EF4444;
+  color: #fff;
+  border-color: #EF4444;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 60px 0;
+  color: #94A3B8;
+}
+
+.empty-state i {
+  font-size: 40px;
+}
+
+.empty-state p {
+  font-size: 14px;
+  margin: 0;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: 60px 0;
+}
+
+.text-muted {
+  color: #94A3B8;
+}
+
+@media (max-width: 768px) {
+  .vacations-page {
+    padding: 16px;
+  }
+  .vacations-layout {
+    grid-template-columns: 1fr;
+  }
+}

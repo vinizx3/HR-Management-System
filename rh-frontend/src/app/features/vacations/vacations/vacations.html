@@ -1,1 +1,139 @@
-<p>vacations works!</p>
+<div class="vacations-page">
+
+  <div class="page-header">
+    <h1 class="page-title">
+      <i class="bi bi-umbrella-fill"></i>
+      Férias
+    </h1>
+  </div>
+
+  <div class="vacations-layout" [class.hr-layout]="isHrManager">
+
+    <!-- Formulário de solicitação — só para Employee -->
+    @if (!isHrManager) {
+      <div class="form-card">
+        <h2 class="card-title">Solicitar Férias</h2>
+
+        <div class="form-group">
+          <label>Data inicial</label>
+          <input
+            type="date"
+            class="form-input"
+            [(ngModel)]="startDate"
+            [min]="minDate"
+            (change)="onDatesChange()" />
+        </div>
+
+        <div class="form-group">
+          <label>Data final</label>
+          <input
+            type="date"
+            class="form-input"
+            [(ngModel)]="endDate"
+            [min]="startDate || minDate"
+            (change)="onDatesChange()" />
+        </div>
+
+        @if (previewDays !== null && !formError) {
+          <div class="preview-box">
+            <i class="bi bi-info-circle-fill"></i>
+            <span>{{ previewDays }} dias · retorno em {{ getReturnDate() }}</span>
+          </div>
+        }
+
+        @if (formError) {
+          <div class="alert-error">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            {{ formError }}
+          </div>
+        }
+
+        @if (formSuccess) {
+          <div class="alert-success">
+            <i class="bi bi-check-circle-fill"></i>
+            {{ formSuccess }}
+          </div>
+        }
+
+        <button
+          class="btn-submit"
+          (click)="submitRequest()"
+          [disabled]="isSubmitting || !!formError">
+          @if (isSubmitting) {
+            <span class="spinner-border spinner-border-sm"></span>
+          } @else {
+            <i class="bi bi-send-fill"></i>
+          }
+          Enviar solicitação
+        </button>
+      </div>
+    }
+
+    <!-- Histórico -->
+    <div class="history-card">
+      <h2 class="card-title">
+        {{ isHrManager ? 'Todas as solicitações' : 'Histórico de solicitações' }}
+      </h2>
+
+      @if (isLoading) {
+        <div class="loading">
+          <div class="spinner-border text-primary" role="status"></div>
+        </div>
+      } @else if (vacations.length === 0) {
+        <div class="empty-state">
+          <i class="bi bi-calendar-x"></i>
+          <p>Nenhuma solicitação encontrada</p>
+        </div>
+      } @else {
+        <div class="table-wrapper">
+          <table class="vacations-table">
+            <thead>
+              <tr>
+                @if (isHrManager) { <th>Funcionário</th> }
+                <th>Período</th>
+                <th>Dias</th>
+                <th>Solicitado em</th>
+                <th>Status</th>
+                @if (isHrManager) { <th>Ações</th> }
+              </tr>
+            </thead>
+            <tbody>
+              @for (vacation of vacations; track vacation.id) {
+                <tr>
+                  @if (isHrManager) {
+                    <td class="td-name">{{ vacation.employeeName }}</td>
+                  }
+                  <td class="td-period">
+                    {{ vacation.startDate }} → {{ vacation.endDate }}
+                  </td>
+                  <td class="td-days">{{ vacation.vacationDays }} dias</td>
+                  <td class="td-date">{{ vacation.requestedAt }}</td>
+                  <td>
+                    <span class="badge" [ngClass]="getStatusClass(vacation.vacationStatus)">
+                      {{ getStatusLabel(vacation.vacationStatus) }}
+                    </span>
+                  </td>
+                  @if (isHrManager) {
+                    <td class="td-actions">
+                      @if (vacation.vacationStatus === 'PENDING') {
+                        <button class="btn-approve" (click)="approve(vacation.id)" title="Aprovar">
+                          <i class="bi bi-check-lg"></i>
+                        </button>
+                        <button class="btn-reject" (click)="reject(vacation.id)" title="Rejeitar">
+                          <i class="bi bi-x-lg"></i>
+                        </button>
+                      } @else {
+                        <span class="text-muted">—</span>
+                      }
+                    </td>
+                  }
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+
+  </div>
+</div>

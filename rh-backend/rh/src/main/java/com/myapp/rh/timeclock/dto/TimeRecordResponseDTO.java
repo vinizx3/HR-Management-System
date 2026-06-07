@@ -9,6 +9,7 @@ import java.util.UUID;
 public record TimeRecordResponseDTO(
 
         UUID id,
+        String employeeName,
         String date,
         String clockIn,
         String clockOut,

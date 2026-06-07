@@ -1,0 +1,191 @@
+.notifications-page {
+  padding: 32px;
+  max-width: 1200px; /* Alinhado com a largura da sua Dashboard principal */
+  margin: 0 auto;    /* Centraliza o bloco inteiro na tela caso ela seja ultra-wide */
+  width: 100%;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.page-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #1E293B;
+  margin: 0;
+}
+
+.btn-mark-read {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  color: #2563EB;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 14px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-mark-read:hover {
+  background: #EFF6FF;
+  color: #1D4ED8;
+}
+
+.filter-pills {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.pill {
+  padding: 8px 18px;
+  border-radius: 8px; /* Cantos levemente suavizados conforme o design moderno */
+  border: 1px solid #D8E2EF;
+  background: #fff;
+  color: #2563EB;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+
+.pill.active {
+  background: #2563EB;
+  border-color: #2563EB;
+  color: #fff;
+}
+
+.pill:hover:not(.active) {
+  background: #F1F5F9;
+  border-color: #CBD5E1;
+}
+
+/* Lista sem fundo rígido, servindo de container espaçador para os cards */
+.notifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* Define o espaçamento entre cada card individual */
+  width: 100%;
+}
+
+/* Cada notificação vira um card individual flutuante */
+.notification-item-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 24px;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.02), 0 1px 2px rgba(15, 23, 42, 0.03);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.notification-item-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  background: #F8FAFC;
+}
+
+/* Modificação sutil de cor de fundo se o item não estiver lido */
+.notification-item-card.unread {
+  background: #F8FAFC;
+  border-left: 4px solid #2563EB; /* Destaca a borda esquerda para itens não lidos */
+}
+
+.notif-indicator {
+  width: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.unread-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #2563EB;
+}
+
+/* Envoltório circular grande para o ícone */
+.notif-icon-wrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+/* Paleta de Cores Pastel dos Ícones */
+.icon-success {
+  background: #E8F5E9;
+  color: #2E7D32;
+}
+
+.icon-danger {
+  background: #FFEBEE;
+  color: #C62828;
+}
+
+.icon-info {
+  background: #E3F2FD;
+  color: #1565C0;
+}
+
+.notif-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.notif-message {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1E293B;
+}
+
+.notif-time {
+  font-size: 13px;
+  color: #64748B;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 80px 0;
+  color: #94A3B8;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #E2E8F0;
+}
+
+.empty-state i {
+  font-size: 56px;
+  color: #CBD5E1;
+}
+
+.empty-state p {
+  font-size: 16px;
+  margin: 0;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: 80px 0;
+}

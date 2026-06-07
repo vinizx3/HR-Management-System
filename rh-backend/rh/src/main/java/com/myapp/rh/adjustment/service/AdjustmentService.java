@@ -13,6 +13,8 @@ import com.myapp.rh.timeclock.entity.TimeRecord;
 import com.myapp.rh.timeclock.entity.TimeRecordStatus;
 import com.myapp.rh.timeclock.entity.WorkTimeCalculator;
 import com.myapp.rh.timeclock.repository.TimeRecordRepository;
+import com.myapp.rh.notification.entity.Notification;
+import com.myapp.rh.notification.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,7 @@ public class AdjustmentService {
     private final AdjustmentRepository adjustmentRequestRepository;
     private final TimeRecordRepository timeRecordRepository;
     private final EmployeeRepository employeeRepository;
+    private final NotificationRepository notificationRepository;
     private final Clock clock;
 
     public AdjustmentResponseDTO requestAdjustment(
@@ -85,6 +88,15 @@ public class AdjustmentService {
 
         Adjustment saved = adjustmentRequestRepository.save(adjustment);
 
+        Notification notification = Notification.builder()
+                .employeeEmail(adjustment.getEmployee().getEmail())
+                .message("Your adjustment request has been approved.")
+                .read(false)
+                .createdAt(LocalDateTime.now(clock))
+                .build();
+
+        notificationRepository.save(notification);
+
         log.info("Adjustment approved | adjustmentId={} | manager={}",
                 adjustmentId, managerEmail);
 
@@ -104,6 +116,15 @@ public class AdjustmentService {
         adjustment.setReviewedBy(manager);
 
         Adjustment saved = adjustmentRequestRepository.save(adjustment);
+
+        Notification notification = Notification.builder()
+                .employeeEmail(adjustment.getEmployee().getEmail())
+                .message("Your adjustment request has been rejected.")
+                .read(false)
+                .createdAt(LocalDateTime.now(clock))
+                .build();
+
+        notificationRepository.save(notification);
 
         log.info("Adjustment rejected | adjustmentId={} | manager={}",
                 adjustmentId, managerEmail);

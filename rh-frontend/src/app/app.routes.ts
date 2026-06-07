@@ -19,7 +19,7 @@ export const routes: Routes = [
         path: 'hr/dashboard',
         canActivate: [hrGuard],
         loadComponent: () =>
-          import('./features/employee/dashboard/EmployeeDashboard').then(m => m.EmployeeDashboard)
+          import('./features/hr/dashboard/HrDashboard').then(m => m.HrDashboard)
       },
       {
         path: 'employee/dashboard',
@@ -37,9 +37,21 @@ export const routes: Routes = [
           import('./features/vacations/vacations/vacations').then(m => m.Vacations)
       },
       {
+        path: 'hr/employees',
+        canActivate: [hrGuard],
+        loadComponent: () =>
+          import('./features/hr/employees/HrEmployees').then(m => m.HrEmployees)
+      },
+      {
         path: 'notifications',
         loadComponent: () =>
           import('./features/notifications/notifications/notifications').then(m => m.Notifications)
+      },
+      {
+        path: 'hr/settings',
+        canActivate: [hrGuard],
+        loadComponent: () =>
+          import('./features/hr/settings/HrSettings').then(m => m.HrSettings)
       },
       {
         path: '',

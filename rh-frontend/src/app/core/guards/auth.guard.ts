@@ -26,8 +26,8 @@ export const hrGuard: CanActivateFn = () => {
     const router = inject(Router);
 
     console.log('%c[hrGuard] Verificando permissões de RH...', 'color: #ffc107; font-weight: bold;');
-  console.log('Role encontrada:', authService.getRole());
-  console.log('É HR Manager?:', authService.isHrManager());
+    console.log('Role encontrada:', authService.getRole());
+    console.log('É HR Manager?:', authService.isHrManager());
 
     if (authService.isLoggedIn() && authService.isHrManager()) {
         return true;

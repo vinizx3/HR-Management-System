@@ -24,7 +24,7 @@
   gap: 20px;
 }
 
-.notification-btn {
+.notifications-btn {
   position: relative;
   color: var(--text-muted);
   font-size: 20px;
@@ -33,14 +33,14 @@
   align-items: center;
 }
 
-.notification-btn:hover {
+.notifications-btn:hover {
   color: var(--primary);
 }
 
 .badge {
   position: absolute;
   top: -6px;
-  right: -6px;
+  right: -8.5px;
   background-color: var(--danger);
   color: white;
   font-size: 10px;

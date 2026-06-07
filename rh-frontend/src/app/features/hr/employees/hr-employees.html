@@ -1,0 +1,195 @@
+<div class="employees-page">
+
+  <div class="page-header">
+    <h1 class="page-title">
+      <i class="bi bi-people-fill"></i>
+      Funcionários
+    </h1>
+    <button class="btn-new" (click)="openCreateModal()">
+      <i class="bi bi-plus-lg"></i>
+      Novo funcionário
+    </button>
+  </div>
+
+  <div class="toolbar">
+    <div class="search-wrap">
+      <i class="bi bi-search"></i>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Buscar por nome, email ou departamento..."
+        [(ngModel)]="searchTerm" />
+    </div>
+    <span class="count-label">{{ filteredEmployees.length }} funcionários</span>
+  </div>
+
+  <div class="table-card">
+    @if (isLoading) {
+      <div class="loading">
+        <div class="spinner-border text-primary" role="status"></div>
+      </div>
+    } @else if (filteredEmployees.length === 0) {
+      <div class="empty-state">
+        <i class="bi bi-people"></i>
+        <p>Nenhum funcionário encontrado</p>
+      </div>
+    } @else {
+      <div class="table-wrapper">
+        <table class="employees-table">
+          <thead>
+            <tr>
+              <th>Funcionário</th>
+              <th>Email</th>
+              <th>Departamento</th>
+              <th>Cargo</th>
+              <th>Salário</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (employee of filteredEmployees; track employee.id) {
+              <tr>
+                <td class="td-employee">
+                  <div class="employee-avatar">{{ getInitials(employee.name) }}</div>
+                  <span class="employee-name">{{ employee.name }}</span>
+                </td>
+                <td class="td-email">{{ employee.email }}</td>
+                <td>{{ employee.department || '—' }}</td>
+                <td>
+                  <span class="badge" [ngClass]="getRoleClass(employee.role)">
+                    {{ getRoleLabel(employee.role) }}
+                  </span>
+                </td>
+                <td class="td-salary">
+                  {{ employee.salary | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
+                </td>
+                <td>
+                  <span class="badge" [ngClass]="employee.active ? 'badge-success' : 'badge-danger'">
+                    {{ employee.active ? 'Ativo' : 'Inativo' }}
+                  </span>
+                </td>
+                <td class="td-actions">
+                  <button class="btn-icon btn-edit" (click)="openEditModal(employee)" title="Editar">
+                    <i class="bi bi-pencil-fill"></i>
+                  </button>
+                  @if (employee.active) {
+                    <button class="btn-icon btn-deactivate" (click)="confirmDeactivate(employee)" title="Desativar">
+                      <i class="bi bi-person-x-fill"></i>
+                    </button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+
+</div>
+
+@if (showModal) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <h3>{{ isEditing ? 'Editar funcionário' : 'Novo funcionário' }}</h3>
+        <button class="btn-close-modal" (click)="closeModal()">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nome <span class="required">*</span></label>
+            <input type="text" class="form-input" [(ngModel)]="form.name" placeholder="Nome completo" />
+          </div>
+          <div class="form-group">
+            <label>Email <span class="required">*</span></label>
+            <input type="email" class="form-input" [(ngModel)]="form.email" placeholder="email@empresa.com" />
+          </div>
+        </div>
+
+        @if (!isEditing) {
+          <div class="form-group">
+            <label>Senha <span class="required">*</span></label>
+            <input type="password" class="form-input" [(ngModel)]="form.password" placeholder="Senha inicial" />
+          </div>
+        }
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Departamento</label>
+            <input type="text" class="form-input" [(ngModel)]="form.department" placeholder="Ex: TI, RH, Financeiro" />
+          </div>
+          <div class="form-group">
+            <label>Cargo <span class="required">*</span></label>
+            <select class="form-input" [(ngModel)]="form.role">
+              <option value="EMPLOYEE">Funcionário</option>
+              <option value="HR_MANAGER">RH Manager</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Salário <span class="required">*</span></label>
+          <input type="number" class="form-input" [(ngModel)]="form.salary" placeholder="0,00" min="0" step="0.01" />
+        </div>
+
+        @if (formError) {
+          <div class="alert-error">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            {{ formError }}
+          </div>
+        }
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="closeModal()">Cancelar</button>
+        <button class="btn-save" (click)="submitForm()" [disabled]="isSubmitting">
+          @if (isSubmitting) {
+            <span class="spinner-border spinner-border-sm"></span>
+          } @else {
+            <i class="bi bi-check-lg"></i>
+          }
+          {{ isEditing ? 'Salvar alterações' : 'Criar funcionário' }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+}
+
+@if (showDeactivateConfirm) {
+  <div class="modal-overlay" (click)="cancelDeactivate()">
+    <div class="modal-box modal-small" (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <h3>Desativar funcionário</h3>
+        <button class="btn-close-modal" (click)="cancelDeactivate()">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="deactivate-warning">
+          <i class="bi bi-exclamation-triangle-fill"></i>
+          <p>Tem certeza que deseja desativar <strong>{{ deactivatingEmployee?.name }}</strong>? O funcionário perderá acesso ao sistema.</p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="cancelDeactivate()">Cancelar</button>
+        <button class="btn-deactivate-confirm" (click)="deactivate()">
+          <i class="bi bi-person-x-fill"></i>
+          Desativar
+        </button>
+      </div>
+
+    </div>
+  </div>
+}

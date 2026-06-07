@@ -12,13 +12,13 @@ import com.myapp.rh.exception.BusinessException;
 import com.myapp.rh.timeclock.entity.TimeRecord;
 import com.myapp.rh.timeclock.entity.TimeRecordStatus;
 import com.myapp.rh.timeclock.repository.TimeRecordRepository;
+import com.myapp.rh.notification.repository.NotificationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
-
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -45,6 +45,9 @@ public class AdjustmentServiceTest {
     @Mock
     private EmployeeRepository employeeRepository;
 
+    @Mock
+    private NotificationRepository notificationRepository;
+
     private Clock clock;
     private AdjustmentService adjustmentService;
 
@@ -67,7 +70,7 @@ public class AdjustmentServiceTest {
 
         adjustmentService = new AdjustmentService(
                 adjustmentRepository, timeRecordRepository,
-                employeeRepository, clock
+                employeeRepository, notificationRepository, clock
         );
 
         employeeId = UUID.randomUUID();

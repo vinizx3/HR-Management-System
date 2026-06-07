@@ -1,1 +1,61 @@
-<p>notifications works!</p>
+<div class="notifications-page">
+
+  <div class="page-header">
+    <h1 class="page-title">Notificações</h1>
+    
+    <button class="btn-mark-read" (click)="markAllAsRead()">
+      <i class="bi bi-check2-all"></i>
+      Marcar todas como lidas
+    </button>
+  </div>
+
+  <div class="filter-pills">
+    <button class="pill" [class.active]="activeFilter === 'todas'" (click)="applyFilter('todas')">
+      Todas
+    </button>
+    <button class="pill" [class.active]="activeFilter === 'nao-lidas'" (click)="applyFilter('nao-lidas')">
+      Não lidas
+    </button>
+    <button class="pill" [class.active]="activeFilter === 'ferias'" (click)="applyFilter('ferias')">
+      Férias
+    </button>
+    <button class="pill" [class.active]="activeFilter === 'ponto'" (click)="applyFilter('ponto')">
+      Ponto
+    </button>
+  </div>
+
+  @if (isLoading) {
+    <div class="loading">
+      <div class="spinner-border text-primary" role="status"></div>
+    </div>
+  } @else if (filteredNotifications.length === 0) {
+    <div class="empty-state">
+      <i class="bi bi-bell-slash"></i>
+      <p>Nenhuma notificação encontrada</p>
+    </div>
+  } @else {
+    <div class="notifications-list">
+      @for (notification of filteredNotifications; track notification.id) {
+        <div class="notification-item-card" [class.unread]="!notification.read">
+          
+          <div class="notif-indicator">
+            @if (!notification.read) {
+              <span class="unread-dot"></span>
+            }
+          </div>
+
+          <div class="notif-icon-wrap" [ngClass]="getIconBg(notification.message)">
+            <i class="bi" [ngClass]="getIcon(notification.message)"></i>
+          </div>
+
+          <div class="notif-content">
+            <span class="notif-message">{{ translateMessage(notification.message) }}</span>
+            <span class="notif-time">{{ notification.createdAt }}</span>
+          </div>
+
+        </div>
+      }
+    </div>
+  }
+
+</div>

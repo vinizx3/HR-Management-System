@@ -1,1 +1,107 @@
-<div class="dashboard" style="background-color: #10B981;"> </div>
+<div class="dashboard">
+
+  <div class="page-header">
+    <div>
+      <h1 class="greeting">{{ getGreeting() }}, {{ managerName }} 👋</h1>
+      <p class="date">{{ today | date:"EEEE, dd 'de' MMMM 'de' yyyy" : '' : 'pt-BR' }}</p>
+    </div>
+  </div>
+
+  <div class="kpi-grid">
+
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#EFF6FF">
+        <i class="bi bi-people-fill" style="color:#3B82F6"></i>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-value">{{ totalEmployees }}</span>
+        <span class="kpi-label">Funcionários ativos</span>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#FFF7ED">
+        <i class="bi bi-clock-history" style="color:#F59E0B"></i>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-value">{{ pendingAdjustments }}</span>
+        <span class="kpi-label">Ajustes de ponto pendentes</span>
+      </div>
+      <a routerLink="/timeclock" class="kpi-link">Ver todos →</a>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#F0FDF4">
+        <i class="bi bi-umbrella-fill" style="color:#10B981"></i>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-value">{{ pendingVacations }}</span>
+        <span class="kpi-label">Férias pendentes</span>
+      </div>
+      <a routerLink="/vacations" class="kpi-link">Ver todos →</a>
+    </div>
+
+    <div class="kpi-card expiring">
+      <div class="kpi-icon" style="background:#FEF3C7">
+        <i class="bi bi-exclamation-triangle-fill" style="color:#F59E0B"></i>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-value">{{ expiringVacations }}</span>
+        <span class="kpi-label">Férias vencendo em 30 dias</span>
+      </div>
+      <span class="kpi-urgent">Ação urgente</span>
+    </div>
+
+  </div>
+
+  <div class="section-card">
+  <div class="section-header">
+    <h3 class="section-title">
+      <i class="bi bi-check2-circle me-2"></i>
+      Aprovações pendentes
+    </h3>
+    @if (pendingList.length > 0) {
+      <span class="pending-badge">{{ pendingList.length }}</span>
+    }
+  </div>
+
+  @if (isLoading) {
+    <div class="text-center py-4">
+      <div class="spinner-border text-primary" role="status"></div>
+    </div>
+  } @else if (pendingList.length === 0) {
+    <div class="empty-state">
+      <i class="bi bi-check-circle"></i>
+      <p>Nenhuma aprovação pendente</p>
+    </div>
+  } @else {
+    <div class="approval-list">
+      @for (item of pendingList; track item.id) {
+        <div class="approval-item">
+          <div class="approval-avatar">
+            {{ getInitials(item.employeeName) }}
+          </div>
+          <div class="approval-info">
+            <span class="approval-name">{{ item.employeeName }}</span>
+            <span class="approval-detail">
+              <span class="approval-type" [style.color]="item.typeColor">
+                {{ item.type }}
+              </span>
+              · {{ item.detail }}
+            </span>
+          </div>
+          <div class="approval-actions">
+            <button class="btn-approve" (click)="approve(item)">
+              <i class="bi bi-check-lg"></i>
+            </button>
+            <button class="btn-reject" (click)="reject(item)">
+              <i class="bi bi-x-lg"></i>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
+
+</div>

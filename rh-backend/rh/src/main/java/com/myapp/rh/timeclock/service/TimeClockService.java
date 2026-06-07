@@ -56,8 +56,12 @@ public class TimeClockService {
         Employee employee = getEmployeeByEmail(email);
 
         TimeRecord timeRecord = timeRecordRepository
-                .findByEmployeeIdAndDate(employee.getId(), today)
-                .orElseThrow(() -> new ResourceNotFoundException("Point not found"));
+        .findByEmployeeIdAndDateAndStatus(
+                employee.getId(),
+                today,
+                TimeRecordStatus.OPEN
+        )
+        .orElseThrow(() -> new ResourceNotFoundException("Open point not found"));
 
         if (timeRecord.getStatus() != TimeRecordStatus.OPEN) {
             throw new BusinessException("Point already closed");
@@ -107,6 +111,14 @@ public class TimeClockService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<TimeRecordResponseDTO> getAllRecords() {
+        return timeRecordRepository.findAll()
+                .stream()
+                .map(this::toDTO)
+                .toList();
+    }
+
     private TimeRecordResponseDTO toDTO(TimeRecord timeRecord) {
 
         DateTimeFormatter dateFormatter =
@@ -131,6 +143,7 @@ public class TimeClockService {
 
         return new TimeRecordResponseDTO(
                 timeRecord.getId(),
+                timeRecord.getEmployee().getName(),
                 date,
                 clockIn,
                 clockOut,
@@ -149,8 +162,11 @@ public class TimeClockService {
     }
 
     private void validateNoOpenRecord(UUID employeeId, LocalDate date) {
-        if (timeRecordRepository.findByEmployeeIdAndDate(employeeId, date).isPresent()) {
-            throw new BusinessException("There is already an open point today");
-        }
-    }
+    boolean hasOpen = timeRecordRepository
+        .findByEmployeeIdAndDateAndStatus(employeeId, date, TimeRecordStatus.OPEN)
+        .isPresent();
+
+    if (hasOpen) {
+        throw new BusinessException("There is already an open point today");
+    }}
 }

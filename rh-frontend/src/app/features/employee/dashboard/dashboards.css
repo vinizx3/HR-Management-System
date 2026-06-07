@@ -2,7 +2,6 @@
   max-width: 1200px;
 }
 
-/* Header */
 .page-header {
   margin-bottom: 24px;
 }
@@ -20,7 +19,6 @@
   margin: 4px 0 0;
 }
 
-/* Hero Card */
 .hero-card {
   background: #ffffff;
   border-radius: 16px;
@@ -111,7 +109,6 @@
   box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);
 }
 
-/* KPI Grid */
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -183,7 +180,6 @@
   white-space: nowrap;
 }
 
-/* Section Card */
 .section-card {
   background: #ffffff;
   border-radius: 12px;
@@ -198,7 +194,6 @@
   margin-bottom: 20px;
 }
 
-/* Table */
 .records-table {
   overflow-x: auto;
 }
@@ -222,13 +217,13 @@
   padding: 14px 12px;
   border-bottom: 1px solid #F8FAFC;
   color: #1E293B;
+  text-align: center; 
 }
 
 .table tbody tr:hover {
   background: #F8FAFC;
 }
 
-/* Badges */
 .badge-status {
   padding: 4px 10px;
   border-radius: 20px;
@@ -256,7 +251,6 @@
   color: #475569;
 }
 
-/* Empty State */
 .empty-state {
   text-align: center;
   padding: 40px;
