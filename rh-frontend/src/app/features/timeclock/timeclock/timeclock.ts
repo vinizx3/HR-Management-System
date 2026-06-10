@@ -11,7 +11,7 @@ interface TimeRecord {
   clockIn: string;
   clockOut: string | null;
   workedMinutes: number;
-  workedTime: string;
+  workedTime: string | null;
   overtimeMinutes: number;
   overtimeTime: string;
   status: 'OPEN' | 'CLOSED' | 'ADJUSTED';
