@@ -107,9 +107,9 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of(
+        configuration.setAllowedOriginPatternsgit add .(List.of(
                 "http://localhost:4200", 
-                "https://hr-management-system-seven-gilt.vercel.app"
+                "https://*.vercel.app"
         ));
         configuration.setAllowedMethods(List.of("*"));
         configuration.setAllowedHeaders(List.of("*"));
