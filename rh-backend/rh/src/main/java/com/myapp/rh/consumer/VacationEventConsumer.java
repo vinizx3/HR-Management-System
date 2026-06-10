@@ -5,10 +5,12 @@ import com.myapp.rh.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
+@Profile("!prod")
 @RequiredArgsConstructor
 public class VacationEventConsumer {
 

@@ -5,7 +5,7 @@ import com.myapp.rh.employee.repository.EmployeeRepository;
 import com.myapp.rh.event.VacationReviewedEvent;
 import com.myapp.rh.exception.BusinessException;
 import com.myapp.rh.exception.ResourceNotFoundException;
-import com.myapp.rh.producer.VacationEventProducer;
+import com.myapp.rh.producer.VacationEventProducerPort;
 import com.myapp.rh.vacation.dto.VacationRequestDTO;
 import com.myapp.rh.vacation.dto.VacationResponseDTO;
 import com.myapp.rh.vacation.entity.VacationRequest;
@@ -30,7 +30,7 @@ public class VacationRequestService {
 
     private final VacationRequestRepository vacationRequestRepository;
     private final EmployeeRepository employeeRepository;
-    private final VacationEventProducer vacationEventProducer;
+    private final VacationEventProducerPort vacationEventProducer;
     private final Clock clock;
 
     public VacationResponseDTO requestVacation(
