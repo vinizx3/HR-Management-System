@@ -1,5 +1,6 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 
+// Production API URL
 const API_URL = 'https://hr-management-system-4smu.onrender.com';
 
 export const apiInterceptor: HttpInterceptorFn = (req, next) => {
