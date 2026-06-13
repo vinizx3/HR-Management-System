@@ -54,13 +54,11 @@ public class TimeClockService {
 
     public TimeRecordResponseDTO clockOut(String email) {
 
-        LocalDate today = LocalDate.now(clock);
         Employee employee = getEmployeeByEmail(email);
 
         TimeRecord timeRecord = timeRecordRepository
-                .findByEmployeeIdAndDateAndStatus(
+                .findFirstByEmployeeIdAndStatusOrderByDateDesc(
                         employee.getId(),
-                        today,
                         TimeRecordStatus.OPEN
                 )
                 .orElseThrow(() -> new ResourceNotFoundException("Open point not found"));
