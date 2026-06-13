@@ -99,14 +99,25 @@ export class Timeclock implements OnInit, OnDestroy {
     this.http.get<TimeRecord[]>(endpoint).subscribe({
       next: (data) => {
         this.records = data.reverse();
+
+        const now = new Date();
+        const day = String(now.getDate()).padStart(2, '0');
+        const month = String(now.getMonth() + 1).padStart(2, '0'); // Mês começa em 0
+        const year = now.getFullYear();
+        const today = `${day}/${month}/${year}`; // Resultado exato: "13/06/2026"
+
+        // Garante que a comparação por string seja idêntica ao DTO
         this.isClockedIn =
-        this.records.length > 0 &&
-        this.records[0].status === 'OPEN';
+          this.records.length > 0 &&
+          this.records[0].status === 'OPEN' &&
+          this.records[0].date === today;
+
         this.isLoading = false;
       },
       error: () => this.isLoading = false
     });
   }
+
 
   clockAction(): void {
     if (this.isClockingIn) return;
