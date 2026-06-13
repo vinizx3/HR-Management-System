@@ -17,5 +17,7 @@ public interface TimeRecordRepository extends JpaRepository<TimeRecord, UUID> {
     TimeRecordStatus status
     );
 
+    Optional<TimeRecord> findByEmployeeIdAndStatus(UUID employeeId, TimeRecordStatus status);
+
     List<TimeRecord> findByEmployeeId(UUID employeeId);
 }

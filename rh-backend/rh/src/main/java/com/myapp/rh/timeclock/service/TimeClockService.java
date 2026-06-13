@@ -39,6 +39,8 @@ public class TimeClockService {
         LocalDate today = LocalDate.now(clock);
         Employee employee = getEmployeeByEmail(email);
 
+        autoCloseOldOpenRecords(employee);
+
         validateNoOpenRecord(employee.getId(), today);
 
         TimeRecord timeRecord = new TimeRecord();
@@ -46,43 +48,6 @@ public class TimeClockService {
         timeRecord.setDate(today);
         timeRecord.setClockIn(LocalDateTime.now(clock));
         timeRecord.setStatus(TimeRecordStatus.OPEN);
-
-        return toDTO(timeRecordRepository.save(timeRecord));
-    }
-
-    public TimeRecordResponseDTO clockOut(String email) {
-
-        LocalDate today = LocalDate.now(clock);
-        Employee employee = getEmployeeByEmail(email);
-
-        TimeRecord timeRecord = timeRecordRepository
-        .findByEmployeeIdAndDateAndStatus(
-                employee.getId(),
-                today,
-                TimeRecordStatus.OPEN
-        )
-        .orElseThrow(() -> new ResourceNotFoundException("Open point not found"));
-
-        if (timeRecord.getStatus() != TimeRecordStatus.OPEN) {
-            throw new BusinessException("Point already closed");
-        }
-
-        LocalDateTime now = LocalDateTime.now(clock);
-        timeRecord.setClockOut(now);
-
-        long minutesWorked = ChronoUnit.MINUTES.between(
-                timeRecord.getClockIn(), now);
-
-        timeRecord.setWorkedMinutes((int) minutesWorked);
-
-        int overtime = WorkTimeCalculator.calculateOvertime(minutesWorked);
-        timeRecord.setOvertimeMinutes(overtime);
-
-        if (overtime > 0) {
-            overtimeBalanceService.addOvertime(employee, overtime);
-        }
-
-        timeRecord.setStatus(TimeRecordStatus.CLOSED);
 
         return toDTO(timeRecordRepository.save(timeRecord));
     }
@@ -153,6 +118,36 @@ public class TimeClockService {
                 overtimeTime,
                 timeRecord.getStatus()
         );
+    }
+
+    private void autoCloseOldOpenRecords(Employee employee) {
+
+        timeRecordRepository.findByEmployeeIdAndStatus(employee.getId(), TimeRecordStatus.OPEN)
+                .ifPresent(oldRecord -> {
+                    log.info("Automatically closing missed clock-in/out entries {} for the employee. {}",
+                            oldRecord.getDate(), employee.getEmail());
+
+                    LocalDateTime simulatedClockOut = oldRecord.getDate().atTime(18, 0);
+
+                    if (simulatedClockOut.isBefore(oldRecord.getClockIn())) {
+                        simulatedClockOut = oldRecord.getClockIn().plusHours(8);
+                    }
+
+                    oldRecord.setClockOut(simulatedClockOut);
+
+                    long minutesWorked = ChronoUnit.MINUTES.between(oldRecord.getClockIn(), simulatedClockOut);
+                    oldRecord.setWorkedMinutes((int) minutesWorked);
+
+                    int overtime = WorkTimeCalculator.calculateOvertime(minutesWorked);
+                    oldRecord.setOvertimeMinutes(overtime);
+
+                    if (overtime > 0) {
+                        overtimeBalanceService.addOvertime(employee, overtime);
+                    }
+
+                    oldRecord.setStatus(TimeRecordStatus.CLOSED);
+                    timeRecordRepository.save(oldRecord);
+                });
     }
 
     private Employee getEmployeeByEmail(String email) {
