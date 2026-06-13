@@ -17,7 +17,7 @@ public class WorkTimeCalculator {
     public static String formatMinutes(int minutes) {
         int hours = minutes / 60;
         int mins = minutes % 60;
-        return hours + "h " + mins + "min";
+        return String.format("%02dh %02dmin", hours, mins);
     }
 }
 

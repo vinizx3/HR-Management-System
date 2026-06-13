@@ -52,6 +52,43 @@ public class TimeClockService {
         return toDTO(timeRecordRepository.save(timeRecord));
     }
 
+    public TimeRecordResponseDTO clockOut(String email) {
+
+        LocalDate today = LocalDate.now(clock);
+        Employee employee = getEmployeeByEmail(email);
+
+        TimeRecord timeRecord = timeRecordRepository
+                .findByEmployeeIdAndDateAndStatus(
+                        employee.getId(),
+                        today,
+                        TimeRecordStatus.OPEN
+                )
+                .orElseThrow(() -> new ResourceNotFoundException("Open point not found"));
+
+        if (timeRecord.getStatus() != TimeRecordStatus.OPEN) {
+            throw new BusinessException("Point already closed");
+        }
+
+        LocalDateTime now = LocalDateTime.now(clock);
+        timeRecord.setClockOut(now);
+
+        long minutesWorked = ChronoUnit.MINUTES.between(
+                timeRecord.getClockIn(), now);
+
+        timeRecord.setWorkedMinutes((int) minutesWorked);
+
+        int overtime = WorkTimeCalculator.calculateOvertime(minutesWorked);
+        timeRecord.setOvertimeMinutes(overtime);
+
+        if (overtime > 0) {
+            overtimeBalanceService.addOvertime(employee, overtime);
+        }
+
+        timeRecord.setStatus(TimeRecordStatus.CLOSED);
+
+        return toDTO(timeRecordRepository.save(timeRecord));
+    }
+
     @Transactional(readOnly = true)
     public List<TimeRecordResponseDTO> getMyRecords(String email) {
 
