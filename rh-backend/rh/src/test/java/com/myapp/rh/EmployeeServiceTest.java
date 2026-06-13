@@ -159,13 +159,11 @@ public class EmployeeServiceTest {
         dto.setSalary(new BigDecimal("8000"));
 
         when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
-        when(employeeRepository.save(any())).thenReturn(employee);
 
         employeeService.update(employeeId, dto);
 
         assertEquals("John Doe", employee.getName());
         assertEquals(Role.HR_MANAGER, employee.getRole());
-        verify(employeeRepository).save(employee);
     }
 
     @Test
@@ -176,7 +174,6 @@ public class EmployeeServiceTest {
         employeeService.delete(employeeId);
 
         assertFalse(employee.isActive());
-        verify(employeeRepository).save(employee);
     }
 
     @Test

@@ -58,5 +58,5 @@ springdoc:
 logging:
   level:
     root: INFO
-    org.springframework.security: DEBUG
+    org.springframework.security: WARN
     org.hibernate.SQL: WARN

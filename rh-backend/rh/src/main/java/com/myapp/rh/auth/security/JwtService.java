@@ -25,13 +25,6 @@ public class JwtService {
 
     public String generateToken(Employee employee){
 
-        log.info("GENERATING TOKEN FOR: {}", employee.getEmail());
-        log.info("EXPIRATION: {}", expiration);
-        log.info("JWT SECRET: {}", secretkey);
-        log.info("JWT SECRET LENGTH: {}", secretkey.length());
-        System.out.println(Keys.secretKeyFor(SignatureAlgorithm.HS256));
-        System.out.println("SECRET SIZE: " + secretkey.length());
-
         Date now = new Date();
         Date expirationDate = new Date(now.getTime() + expiration);
 

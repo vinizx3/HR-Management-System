@@ -4,7 +4,7 @@ import com.myapp.rh.employee.entity.Employee;
 import com.myapp.rh.employee.entity.Role;
 import com.myapp.rh.employee.repository.EmployeeRepository;
 import com.myapp.rh.exception.BusinessException;
-import com.myapp.rh.producer.VacationEventProducer;
+import com.myapp.rh.producer.VacationEventProducerPort;
 import com.myapp.rh.vacation.dto.VacationRequestDTO;
 import com.myapp.rh.vacation.dto.VacationResponseDTO;
 import com.myapp.rh.vacation.entity.VacationRequest;
@@ -41,7 +41,7 @@ public class VacationRequestServiceTest {
     private EmployeeRepository employeeRepository;
 
     @Mock
-    private VacationEventProducer vacationEventProducer;
+    private VacationEventProducerPort vacationEventProducer;
 
     private Clock clock;
     private VacationRequestService vacationRequestService;

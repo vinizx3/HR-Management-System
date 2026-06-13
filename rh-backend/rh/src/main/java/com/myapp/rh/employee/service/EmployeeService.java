@@ -9,6 +9,7 @@ import com.myapp.rh.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
 import java.time.LocalDate;
@@ -23,6 +24,7 @@ public class EmployeeService {
     private final PasswordEncoder passwordEncoder;
     private final Clock clock;
 
+    @Transactional
     public EmployeeResponseDTO create(EmployeeRequestDTO dto) {
 
         validateEmail(dto.getEmail());
@@ -55,6 +57,7 @@ public class EmployeeService {
         return toResponse(employee);
     }
 
+    @Transactional
     public EmployeeResponseDTO update(UUID id, EmployeeRequestDTO dto) {
 
         Employee employee = employeeRepository.findById(id)
@@ -67,9 +70,10 @@ public class EmployeeService {
         employee.setDepartment(dto.getDepartment());
         employee.setSalary(dto.getSalary());
 
-        return toResponse(employeeRepository.save(employee));
+        return toResponse(employee);
     }
 
+    @Transactional
     public void delete(UUID id) {
 
         Employee employee = employeeRepository.findById(id)
@@ -77,7 +81,6 @@ public class EmployeeService {
                         "Employee not found: " + id));
 
         employee.setActive(false);
-        employeeRepository.save(employee);
     }
 
     private EmployeeResponseDTO toResponse(Employee employee) {
