@@ -41,7 +41,7 @@ public class VacationRequestServiceTest {
     private EmployeeRepository employeeRepository;
 
     @Mock
-    private VacationEventProducerPort vacationEventProducer;
+    private VacationEventProducerPort vacationEventProducerPort;
 
     private Clock clock;
     private VacationRequestService vacationRequestService;
@@ -64,7 +64,7 @@ public class VacationRequestServiceTest {
         vacationRequestService = new VacationRequestService(
                 vacationRequestRepository,
                 employeeRepository,
-                vacationEventProducer,
+                vacationEventProducerPort,
                 clock
         );
 
@@ -193,7 +193,7 @@ public class VacationRequestServiceTest {
 
         assertEquals(VacationStatus.APPROVED, responseDTO.vacationStatus());
 
-        verify(vacationEventProducer).sendVacationReviewedEvent(
+        verify(vacationEventProducerPort).sendVacationReviewedEvent(
                 argThat(event -> event.status().equals("APPROVED"))
         );
     }
@@ -216,7 +216,7 @@ public class VacationRequestServiceTest {
 
         assertEquals(VacationStatus.REJECTED, responseDTO.vacationStatus());
 
-        verify(vacationEventProducer).sendVacationReviewedEvent(
+        verify(vacationEventProducerPort).sendVacationReviewedEvent(
                 argThat(event -> event.status().equals("REJECTED")));
     }
 
@@ -232,7 +232,7 @@ public class VacationRequestServiceTest {
                 () -> vacationRequestService.approveRequest(vacationId, "manager@test.com"));
 
         verify(vacationRequestRepository, never()).save(any());
-        verify(vacationEventProducer, never()).sendVacationReviewedEvent(any());
+        verify(vacationEventProducerPort, never()).sendVacationReviewedEvent(any());
     }
 
     private VacationRequest buildVacation(VacationStatus status) {

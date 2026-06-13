@@ -104,7 +104,7 @@ public class OvertimeBalanceServiceTest {
                 overtimeBalanceService.compensate("john@test.com", dto);
 
         assertEquals(60, balance.getTotalMinutes());
-        assertEquals("1h 0min", responseDTO.formatedBalance());
+        assertEquals("01h 00min", responseDTO.formatedBalance());
     }
 
     @Test
@@ -146,7 +146,7 @@ public class OvertimeBalanceServiceTest {
         OvertimeBalanceResponseDTO response =
                 overtimeBalanceService.getMyBalance("john@test.com");
 
-        assertEquals("1h 30min", response.formatedBalance());
+        assertEquals("01h 30min", response.formatedBalance());
         assertEquals(90, response.totalMinutes());
     }
 }

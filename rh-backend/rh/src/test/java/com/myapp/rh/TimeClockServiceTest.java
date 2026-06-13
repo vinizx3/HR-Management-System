@@ -77,8 +77,8 @@ public class TimeClockServiceTest {
         when(timeRecordRepository.findByEmployeeIdAndDateAndStatus(
                 eq(employeeId),
                 eq(LocalDate.now(clock)),
-                eq(TimeRecordStatus.OPEN)
-        )).thenReturn(Optional.empty());
+                eq(TimeRecordStatus.OPEN) ))
+                .thenReturn(Optional.empty());
 
         when(timeRecordRepository.save(any(TimeRecord.class)))
                 .thenAnswer(inv -> {
@@ -126,9 +126,8 @@ public class TimeClockServiceTest {
         when(employeeRepository.findByEmail("john@test.com"))
                 .thenReturn(Optional.of(employee));
 
-        when(timeRecordRepository.findByEmployeeIdAndDateAndStatus(
+        when(timeRecordRepository.findFirstByEmployeeIdAndStatusOrderByDateDesc(
                 eq(employeeId),
-                eq(LocalDate.now(clock)),
                 eq(TimeRecordStatus.OPEN)
         )).thenReturn(Optional.of(openRecord));
 
@@ -149,9 +148,8 @@ public class TimeClockServiceTest {
         when(employeeRepository.findByEmail("john@test.com"))
                 .thenReturn(Optional.of(employee));
 
-        when(timeRecordRepository.findByEmployeeIdAndDateAndStatus(
+        when(timeRecordRepository.findFirstByEmployeeIdAndStatusOrderByDateDesc(
                 eq(employeeId),
-                eq(LocalDate.now(clock)),
                 eq(TimeRecordStatus.OPEN)
         )).thenReturn(Optional.empty());
 
@@ -165,9 +163,8 @@ public class TimeClockServiceTest {
         when(employeeRepository.findByEmail("john@test.com"))
                 .thenReturn(Optional.of(employee));
 
-        when(timeRecordRepository.findByEmployeeIdAndDateAndStatus(
+        when(timeRecordRepository.findFirstByEmployeeIdAndStatusOrderByDateDesc(
                 eq(employeeId),
-                eq(LocalDate.now(clock)),
                 eq(TimeRecordStatus.OPEN)
         )).thenReturn(Optional.empty());
 
@@ -202,9 +199,8 @@ public class TimeClockServiceTest {
         when(employeeRepository.findByEmail("john@test.com"))
                 .thenReturn(Optional.of(employee));
 
-        when(timeRecordRepository.findByEmployeeIdAndDateAndStatus(
+        when(timeRecordRepository.findFirstByEmployeeIdAndStatusOrderByDateDesc(
                 any(UUID.class),
-                any(LocalDate.class),
                 eq(TimeRecordStatus.OPEN)
         )).thenReturn(Optional.of(openRecord));
 
@@ -244,9 +240,8 @@ public class TimeClockServiceTest {
         when(employeeRepository.findByEmail("john@test.com"))
                 .thenReturn(Optional.of(employee));
 
-        when(timeRecordRepository.findByEmployeeIdAndDateAndStatus(
+        when(timeRecordRepository.findFirstByEmployeeIdAndStatusOrderByDateDesc(
                 any(UUID.class),
-                any(LocalDate.class),
                 eq(TimeRecordStatus.OPEN)
         )).thenReturn(Optional.of(openRecord));
 

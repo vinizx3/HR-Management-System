@@ -102,11 +102,10 @@ export class Timeclock implements OnInit, OnDestroy {
 
         const now = new Date();
         const day = String(now.getDate()).padStart(2, '0');
-        const month = String(now.getMonth() + 1).padStart(2, '0'); // Mês começa em 0
+        const month = String(now.getMonth() + 1).padStart(2, '0');
         const year = now.getFullYear();
-        const today = `${day}/${month}/${year}`; // Resultado exato: "13/06/2026"
+        const today = `${day}/${month}/${year}`;
 
-        // Garante que a comparação por string seja idêntica ao DTO
         this.isClockedIn =
           this.records.length > 0 &&
           this.records[0].status === 'OPEN' &&
