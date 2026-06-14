@@ -104,7 +104,7 @@ export class Timeclock implements OnInit, OnDestroy {
         const day = String(now.getDate()).padStart(2, '0');
         const month = String(now.getMonth() + 1).padStart(2, '0');
         const year = now.getFullYear();
-        const today = `${day}/${month}/${year}`;
+        const today = `${day}/${month}/${year}`; 
 
         this.isClockedIn =
           this.records.length > 0 &&

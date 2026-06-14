@@ -38,14 +38,18 @@ export class EmployeeDashboard implements OnInit {
   this.http.get<any[]>('/api/timeclock/me').subscribe({
     next: (records) => {
       if (records && records.length > 0) {
-        // Clona a array e inverte para garantir que o mais recente (hoje) seja o primeiro, igual no Timeclock
         const orderedRecords = [...records].reverse();
+        const now = new Date();
+        const day = String(now.getDate()).padStart(2, '0');
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const year = now.getFullYear();
+        const today = `${day}/${month}/${year}`;
         
         this.weekRecords = orderedRecords.slice(0, 7);
         this.todayRecord = orderedRecords[0] || null;
         
-        // Agora sim valida o estado do registro mais recente real
-        this.isClockedIn = this.todayRecord?.status === 'OPEN';
+        this.isClockedIn = this.todayRecord?.status === 'OPEN' && 
+          this.todayRecord?.date === today;
       } else {
         this.weekRecords = [];
         this.todayRecord = null;
@@ -98,7 +102,7 @@ export class EmployeeDashboard implements OnInit {
   getProgressPercent(): number {
     if (!this.todayRecord) return 0;
     return Math.min(((
-      this.todayRecord.workedminutes ?? 0) / 480) * 100,100);
+      this.todayRecord.workedMinutes ?? 0) / 480) * 100,100);
   }
 
   getBadgeClass(status: string): string {
