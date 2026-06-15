@@ -27,8 +27,8 @@ export class EmployeeDashboard implements OnInit, OnDestroy {
   constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {console.log('EmployeeDashboard carregado');}
 
   ngOnInit(): void {
-  this.loadDashboardData();
-  this.startLiveTimer();
+    this.loadDashboardData();
+    this.startLiveTimer();
   }
 
   private startLiveTimer(): void {
@@ -63,7 +63,11 @@ export class EmployeeDashboard implements OnInit, OnDestroy {
           this.weekRecords = orderedRecords.slice(0, 7);
 
           this.todayRecord =
-            orderedRecords.find(r => r.date === todayStr) || null;
+            orderedRecords.find(r =>
+              r.status === 'OPEN' || r.status === 'CLOSED'
+            ) || null;
+
+
 
           this.isClockedIn =
             this.todayRecord?.status === 'OPEN' &&
@@ -165,5 +169,20 @@ export class EmployeeDashboard implements OnInit, OnDestroy {
 
     return `${day}/${month}/${year}`;
   }
+
+  private isToday(dateStr: string): boolean {
+  if (!dateStr) return false;
+
+  const [day, month, year] = dateStr.split('/').map(Number);
+
+  const date = new Date(year, month - 1, day);
+  const now = new Date();
+
+  return (
+    date.getDate() === now.getDate() &&
+    date.getMonth() === now.getMonth() &&
+    date.getFullYear() === now.getFullYear()
+  );
+}
 
 }
