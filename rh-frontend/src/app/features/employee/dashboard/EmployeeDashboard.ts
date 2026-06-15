@@ -114,16 +114,28 @@ export class EmployeeDashboard implements OnInit, OnDestroy {
   }
 
   getWorkedMinutes(): number {
-  if (!this.todayRecord) return 0;
+    if (!this.todayRecord || !this.todayRecord.clockIn || !this.todayRecord.date) return 0;
 
-  const clockIn = new Date(this.todayRecord.clockIn);
+    if (this.todayRecord.status === 'CLOSED') {
+      return this.todayRecord.workedMinutes ?? 0;
+    }
 
-  if (this.todayRecord.status === 'CLOSED') {
-    return this.todayRecord.workedMinutes ?? 0;
+    try {
+      const [day, month, year] = this.todayRecord.date.split('/').map(Number);
+      
+      const [hours, minutes] = this.todayRecord.clockIn.split(':').map(Number);
+
+      const clockInDate = new Date(year, month - 1, day, hours, minutes, 0);
+
+      const diffMs = this.now.getTime() - clockInDate.getTime();
+      const diffMinutes = Math.floor(diffMs / 60000);
+
+      return diffMinutes > 0 ? diffMinutes : 0;
+    } catch (e) {
+      console.error('Erro ao processar data de entrada:', e);
+      return 0;
+    }
   }
-
-  return Math.floor((this.now.getTime() - clockIn.getTime()) / 60000);
-}
 
   formatMinutes(minutes: number): string {
     const h = Math.floor(minutes / 60);
