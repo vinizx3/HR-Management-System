@@ -7,6 +7,7 @@ import { AuthService } from '../../../core/services/auth.service';
 interface TimeRecord {
   id: string;
   employeeName: string;
+  employeeEmail: string;
   date: string;
   clockIn: string;
   clockOut: string | null;
@@ -106,10 +107,16 @@ export class Timeclock implements OnInit, OnDestroy {
         const year = now.getFullYear();
         const today = `${day}/${month}/${year}`; 
 
-        this.isClockedIn =
-          this.records.length > 0 &&
-          this.records[0].status === 'OPEN' &&
-          this.records[0].date === today;
+        const currentEmail = this.authService.getEmail();
+
+        const myOpenRecord = this.records.find(
+          record =>
+            record.employeeEmail === currentEmail &&
+            record.status === 'OPEN' &&
+            record.date === today
+        );
+
+        this.isClockedIn = !!myOpenRecord;
 
         this.isLoading = false;
       },

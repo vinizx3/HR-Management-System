@@ -10,6 +10,7 @@ public record TimeRecordResponseDTO(
 
         UUID id,
         String employeeName,
+        String employeeEmail,
         String date,
         String clockIn,
         String clockOut,

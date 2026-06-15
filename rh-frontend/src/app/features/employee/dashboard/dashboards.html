@@ -35,14 +35,37 @@
                 <i class="bi bi-clock" style="color: #3B82F6"></i>
             </div>
             <div class="kpi-info">
-                <span class="kpi-value">{{ todayRecord?.workedTime || '0h 0min' }}</span>
-                <span class="kpi-label">Horas hoje</span>
+              @if (todayRecord?.status === 'OPEN') {
+
+                <span class="kpi-value">
+                    {{ formatMinutes(getWorkedMinutes()) }}
+                </span>
+
+                <span class="kpi-label">
+                    Horas hoje
+                </span>
+
+              } @else {
+                <span class="kpi-value">
+                    {{ formatMinutes(getWorkedMinutes()) }}
+                </span>
+
+                <span class="kpi-label">
+                    Jornada concluída
+                </span>
+              }
             </div>
             <div class="kpi-progess">
                 <div class="progress-bar">
                     <div class="progess-fill" [style.width.%]="getProgressPercent()"></div>
                 </div>
-                <span class="progress-label">de 8h</span>
+                <span class="progress-label">
+                  @if (todayRecord?.status === 'OPEN') {
+                    de 8h
+                  } @else {
+                    trabalhadas
+                  }
+                </span>
             </div>
         </div>
 

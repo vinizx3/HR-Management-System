@@ -144,6 +144,7 @@ public class TimeClockService {
         return new TimeRecordResponseDTO(
                 timeRecord.getId(),
                 timeRecord.getEmployee().getName(),
+                timeRecord.getEmployee().getEmail(),
                 date,
                 clockIn,
                 clockOut,

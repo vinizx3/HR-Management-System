@@ -58,6 +58,17 @@ export class AuthService {
     }
   }
 
+  getEmail(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
+
+    try {
+      return this.decodeToken(token).sub;
+    } catch {
+      return null;
+    }
+  }
+
   isHrManager(): boolean {
     return this.getRole() === 'HR_MANAGER';
   }
