@@ -50,40 +50,28 @@ public class SecurityConfig {
                                 "/v3/api-docs/**"
                         ).permitAll()
 
+                        // EMPLOYEES
+                        .requestMatchers(HttpMethod.GET, "/api/employees/me").hasAnyRole("EMPLOYEE", "HR_MANAGER", "DEMO_ADMIN", "DEMO_EMPLOYEE")
+
                         // TIMECLOCK
+                        .requestMatchers(HttpMethod.GET, "/api/timeclock/me").hasAnyRole("EMPLOYEE", "HR_MANAGER", "DEMO_EMPLOYEE")
+                        .requestMatchers(HttpMethod.GET, "/api/timeclock/adjustment/me").hasAnyRole("EMPLOYEE", "HR_MANAGER", "DEMO_EMPLOYEE")
                         .requestMatchers(HttpMethod.POST, "/api/timeclock/clock-in").hasAnyRole("EMPLOYEE", "HR_MANAGER")
                         .requestMatchers(HttpMethod.POST, "/api/timeclock/clock-out").hasAnyRole("EMPLOYEE", "HR_MANAGER")
-                        .requestMatchers(HttpMethod.GET, "/api/timeclock/me").hasAnyRole("EMPLOYEE", "HR_MANAGER")
-                        .requestMatchers(HttpMethod.GET, "/api/timeclock/adjustment/me").hasAnyRole("EMPLOYEE", "HR_MANAGER")
                         .requestMatchers(HttpMethod.POST, "/api/timeclock/adjustment").hasAnyRole("EMPLOYEE", "HR_MANAGER")
-                        .requestMatchers(HttpMethod.GET, "/api/timeclock/adjustment/pending").hasRole("HR_MANAGER")
-                        .requestMatchers(HttpMethod.PUT, "/api/timeclock/adjustment/*/approve").hasRole("HR_MANAGER")
-                        .requestMatchers(HttpMethod.PUT, "/api/timeclock/adjustment/*/reject").hasRole("HR_MANAGER")
-                        .requestMatchers(HttpMethod.GET, "/api/timeclock/*").hasRole("HR_MANAGER")
-
-                        // EMPLOYEES
-                        .requestMatchers(HttpMethod.GET, "/api/employees/me").hasAnyRole("EMPLOYEE", "HR_MANAGER")
-                        .requestMatchers(HttpMethod.GET, "/api/employees/**").hasRole("HR_MANAGER")
-                        .requestMatchers(HttpMethod.POST, "/api/employees/**").hasRole("HR_MANAGER")
-                        .requestMatchers(HttpMethod.PUT, "/api/employees/**").hasRole("HR_MANAGER")
-                        .requestMatchers(HttpMethod.DELETE, "/api/employees/**").hasRole("HR_MANAGER")
+                        // (as duas linhas acima excluem DEMO_EMPLOYEE de propósito — ele só lê)
 
                         // VACATIONS
+                        .requestMatchers(HttpMethod.GET, "/api/vacations/me").hasAnyRole("EMPLOYEE", "HR_MANAGER", "DEMO_EMPLOYEE")
                         .requestMatchers(HttpMethod.POST, "/api/vacations/request").hasAnyRole("EMPLOYEE", "HR_MANAGER")
-                        .requestMatchers(HttpMethod.GET, "/api/vacations/me").hasAnyRole("EMPLOYEE", "HR_MANAGER")
-                        .requestMatchers(HttpMethod.GET, "/api/vacations/all").hasRole("HR_MANAGER")
-                        .requestMatchers(HttpMethod.GET, "/api/vacations/pending").hasRole("HR_MANAGER")
-                        .requestMatchers(HttpMethod.GET, "/api/vacations/expiring").hasRole("HR_MANAGER")
-                        .requestMatchers(HttpMethod.PUT, "/api/vacations/*/approve").hasRole("HR_MANAGER")
-                        .requestMatchers(HttpMethod.PUT, "/api/vacations/*/reject").hasRole("HR_MANAGER")
+                        // (POST continua sem DEMO_EMPLOYEE — não pode criar solicitação)
 
                         // OVERTIME
-                        .requestMatchers(HttpMethod.GET, "/api/overtime/me").hasAnyRole("EMPLOYEE", "HR_MANAGER")
+                        .requestMatchers(HttpMethod.GET, "/api/overtime/me").hasAnyRole("EMPLOYEE", "HR_MANAGER", "DEMO_EMPLOYEE")
                         .requestMatchers(HttpMethod.POST, "/api/overtime/compensate").hasAnyRole("EMPLOYEE", "HR_MANAGER")
-                        .requestMatchers(HttpMethod.GET, "/api/overtime/*").hasRole("HR_MANAGER")
 
                         // NOTIFICATIONS
-                        .requestMatchers("/api/notifications/**").hasAnyRole("EMPLOYEE", "HR_MANAGER")
+                        .requestMatchers("/api/notifications/**").hasAnyRole("EMPLOYEE", "HR_MANAGER", "DEMO_ADMIN", "DEMO_EMPLOYEE")
 
                         .anyRequest().authenticated()
                 )
