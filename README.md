@@ -1,53 +1,73 @@
 # HR Management System
 
-Sistema fullstack de gestão de RH desenvolvido do zero, com deploy 
-completo em produção.
+Sistema fullstack de gestão de RH desenvolvido do zero, com deploy completo em produção — backend, frontend e banco de dados hospedados em nuvem.
 
-🌐 [Demo Online](https://hr-management-system-seven-gilt.vercel.app)  
-📋 [Swagger API](https://hr-management-system-4smu.onrender.com/swagger-ui/index.html)  
+🌐 [Demo Online](https://hr-management-system-seven-gilt.vercel.app)
+📋 [Swagger API](https://hr-management-system-4smu.onrender.com/swagger-ui/index.html)
 💻 [Repositório](https://github.com/vinizx3/HR-Management-System)
+
+---
+
+## Índice
+
+- [Sobre o projeto](#sobre-o-projeto)
+- [Contas de demonstração](#contas-de-demonstração)
+- [Stack](#stack)
+- [Funcionalidades](#funcionalidades)
+- [Arquitetura](#arquitetura)
+- [Testes](#testes)
+- [CI/CD](#cicd)
+- [Rodando localmente](#rodando-localmente)
+- [Autor](#autor)
 
 ---
 
 ## Sobre o projeto
 
-O sistema simula o ambiente de RH de uma empresa real, com dois perfis 
-de acesso distintos — **HR Manager** e **Employee** — cada um com 
-permissões e telas específicas.
+O sistema simula o ambiente de RH de uma empresa real, com dois perfis de acesso distintos — **HR Manager** e **Employee** — cada um com permissões e telas específicas.
 
-O foco foi implementar regras de negócio reais (inspiradas na CLT), 
-arquitetura em camadas, segurança de API e comunicação assíncrona entre 
-módulos, tudo isso com deploy automatizado e funcionando publicamente.
+O foco foi implementar regras de negócio reais (inspiradas na CLT), arquitetura em camadas, segurança de API e comunicação assíncrona entre módulos, tudo isso com deploy automatizado e funcionando publicamente.
+
+---
+
+## Contas de demonstração
+
+Para explorar o sistema sem precisar criar uma conta, use as credenciais abaixo. São contas **somente leitura** — permitem navegar por todas as telas e visualizar dados reais de teste, mas não é possível criar, editar, aprovar ou excluir nada, protegendo a integridade dos dados de demonstração.
+
+| Perfil | E-mail | Senha | O que dá pra ver |
+|---|---|---|---|
+| HR Manager (demo) | `demo.admin@rh.com` | `demo123` | Dashboard gerencial, lista de funcionários, aprovações pendentes de férias e ajustes de ponto |
+| Employee (demo) | `demo.employee@rh.com` | `demo123` | Dashboard pessoal, histórico de ponto, banco de horas, solicitações de férias e notificações |
+
+> As contas demo usam roles dedicadas (`DEMO_ADMIN` / `DEMO_EMPLOYEE`), restritas a endpoints de leitura no Spring Security — a restrição é garantida no backend, não só escondida na interface.
 
 ---
 
 ## Stack
 
-**Backend**  
-Java 21 · Spring Boot 3 · Spring Security · JWT · Spring Data JPA · 
-Hibernate · PostgreSQL · Apache Kafka · JUnit 5 · Mockito · Swagger
+**Backend**
+Java 21 · Spring Boot 3 · Spring Security · JWT · Spring Data JPA · Hibernate · PostgreSQL · Apache Kafka · JUnit 5 · Mockito · Swagger/OpenAPI
 
-**Frontend**  
+**Frontend**
 Angular 19 · TypeScript · Bootstrap 5
 
-**DevOps**  
-Docker · Docker Compose · GitHub Actions · Render · Vercel
+**DevOps**
+Docker · Docker Compose · GitHub Actions · Render · Vercel · Neon (PostgreSQL)
 
 ---
 
 ## Funcionalidades
 
 ### Autenticação e Segurança
-- JWT stateless — role do usuário no payload do token, sem consulta 
-  ao banco a cada requisição
-- RBAC com dois perfis: HR Manager e Employee
+- JWT stateless — role do usuário no payload do token, sem consulta ao banco a cada requisição
+- RBAC com quatro perfis: HR Manager, Employee, e duas roles de demonstração somente leitura
 - Guards de rota no Angular por perfil
 - Endpoints protegidos por método HTTP e role no Spring Security
 
 ### Gestão de Funcionários
 - CRUD completo com soft delete
 - Listagem apenas de funcionários ativos
-- Validação de email duplicado
+- Validação de e-mail duplicado
 
 ### Controle de Ponto
 - Clock-in e clock-out com cálculo automático de horas trabalhadas
@@ -57,8 +77,7 @@ Docker · Docker Compose · GitHub Actions · Render · Vercel
 - Fluxo completo de ajuste de ponto com aprovação pelo RH
 
 ### Gestão de Férias
-- Solicitação com validações CLT: mínimo 30 dias de antecedência, 
-  máximo 30 dias de período
+- Solicitação com validações CLT: mínimo 30 dias de antecedência, máximo 30 dias de período
 - Fluxo de aprovação gerencial
 - Notificações assíncronas via Kafka após aprovação ou rejeição
 
@@ -71,27 +90,19 @@ Docker · Docker Compose · GitHub Actions · Render · Vercel
 
 ## Arquitetura
 
+```
 Angular 19 (Vercel)
-
-↓
-
+        ↓
 Spring Boot REST API (Render)
+        ↓
+PostgreSQL (Neon)
 
-↓
+Componentes auxiliares: Apache Kafka · Docker · GitHub Actions
+```
 
-PostgreSQL
-Componentes auxiliares:
+**Decisão de design relevante:** o módulo de férias não chama o `NotificationService` diretamente. Ele publica um evento no Kafka e o consumer processa de forma independente. Isso desacopla os módulos — uma falha na notificação não impacta a aprovação das férias.
 
-Apache Kafka · Docker · GitHub Actions
-
-**Decisão de design relevante:** o módulo de férias não chama o 
-NotificationService diretamente. Ele publica um evento no Kafka e o 
-consumer processa de forma independente. Isso desacopla os módulos — 
-uma falha na notificação não impacta a aprovação das férias.
-
-Em produção, onde Kafka não está disponível, um producer alternativo 
-(`@Profile("prod")`) chama o NotificationService diretamente, mantendo 
-o comportamento sem dependência de infraestrutura externa.
+Em produção, onde Kafka não está disponível, um producer alternativo (`@Profile("prod")`) chama o `NotificationService` diretamente, mantendo o comportamento sem dependência de infraestrutura externa.
 
 ---
 
@@ -99,9 +110,7 @@ o comportamento sem dependência de infraestrutura externa.
 
 +55 testes unitários com JUnit 5 e Mockito.
 
-Detalhe importante: todos os services que dependem de data/hora 
-recebem um `Clock` injetável via construtor. Isso garante que os testes 
-são 100% determinísticos — sem `LocalDate.now()` solto no código.
+Detalhe importante: todos os services que dependem de data/hora recebem um `Clock` injetável via construtor. Isso garante que os testes são 100% determinísticos — sem `LocalDate.now()` solto no código.
 
 Cenários cobertos:
 - Regras de negócio de ponto, férias e banco de horas
@@ -147,6 +156,5 @@ ng serve
 
 ## Autor
 
-**Vinicius Fernandes** — Desenvolvedor Java Fullstack  
-[LinkedIn](https://www.linkedin.com/in/viniciusfernandes-dev/) · 
-[GitHub](https://github.com/vinizx3)
+**Vinicius Fernandes** — Desenvolvedor Java Full Stack
+[LinkedIn](https://www.linkedin.com/in/viniciusfernandes-dev/) · [GitHub](https://github.com/vinizx3)
