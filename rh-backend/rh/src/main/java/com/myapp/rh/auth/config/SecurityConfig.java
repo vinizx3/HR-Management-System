@@ -59,12 +59,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/timeclock/clock-in").hasAnyRole("EMPLOYEE", "HR_MANAGER")
                         .requestMatchers(HttpMethod.POST, "/api/timeclock/clock-out").hasAnyRole("EMPLOYEE", "HR_MANAGER")
                         .requestMatchers(HttpMethod.POST, "/api/timeclock/adjustment").hasAnyRole("EMPLOYEE", "HR_MANAGER")
-                        // (as duas linhas acima excluem DEMO_EMPLOYEE de propósito — ele só lê)
 
                         // VACATIONS
                         .requestMatchers(HttpMethod.GET, "/api/vacations/me").hasAnyRole("EMPLOYEE", "HR_MANAGER", "DEMO_EMPLOYEE")
                         .requestMatchers(HttpMethod.POST, "/api/vacations/request").hasAnyRole("EMPLOYEE", "HR_MANAGER")
-                        // (POST continua sem DEMO_EMPLOYEE — não pode criar solicitação)
 
                         // OVERTIME
                         .requestMatchers(HttpMethod.GET, "/api/overtime/me").hasAnyRole("EMPLOYEE", "HR_MANAGER", "DEMO_EMPLOYEE")
