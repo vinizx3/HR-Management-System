@@ -70,8 +70,13 @@ export class AuthService {
   }
 
   isHrManager(): boolean {
-    return this.getRole() === 'HR_MANAGER';
+  return this.getRole() === 'HR_MANAGER' || this.getRole() === 'DEMO_ADMIN';
   }
+
+  isDemoAccount(): boolean {
+  const role = this.getRole();
+  return role === 'DEMO_ADMIN' || role === 'DEMO_EMPLOYEE';
+}
 
   private decodeToken(token: string): TokenPayload {
     const payload = token.split('.')[1];

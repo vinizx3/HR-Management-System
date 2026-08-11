@@ -20,12 +20,17 @@
             </h2>
             <p class="hero-subtitle">Tenha um ótimo dia de trabalho!</p>
         </div>
-
-        <button class="clock-btn"
-        [class.clock-out]="isClockedIn"
-        (click)="isClockedIn ? clockOut() : clockIn()">
-        <span> {{ isClockedIn ? 'ENCERRAR' : 'BATER PONTO' }} </span>
-        </button>
+        @if (!isDemo) {
+          <button class="clock-btn"
+            [class.clock-out]="isClockedIn"
+            (click)="isClockedIn ? clockOut() : clockIn()">
+            <span>{{ isClockedIn ? 'ENCERRAR' : 'BATER PONTO' }}</span>
+          </button>
+        } @else {
+          <span class="demo-badge">
+            <i class="bi bi-eye"></i> Conta de demonstração — somente leitura
+          </span>
+        }
     </div>
 
     <div class="kpi-grid">

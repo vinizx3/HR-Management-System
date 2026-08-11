@@ -31,14 +31,14 @@
                         <input 
                          type="email"
                          class="form-control custom-input"
-                         placegholder="seu@email.com"
+                         placeholder="seu@email.com"
                          formControlName="email"
-                         [class.is.invalid]="email?.invalid && email?.touched"
+                         [class.is-invalid]="email?.invalid && email?.touched"
                         />  
                     </div>
 
                     @if (email?.invalid && email?.touched) {
-                        <div class="invalid feedback d-block">E-mail inválido.</div>
+                        <div class="invalid-feedback d-block">E-mail inválido.</div>
                     }
                 </div>
 
@@ -51,7 +51,7 @@
                          class="form-control custom-input"
                          placeholder="••••••••••"
                          formControlName="password"
-                         [class.is.invalid]="password?.invalid && password?.touched"
+                         [class.is-invalid]="password?.invalid && password?.touched"
                         />
                         <button type="button" class="toggle-password" (click)="togglePassword()">
                             <i [class]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>

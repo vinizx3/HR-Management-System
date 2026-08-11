@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../../core/services/auth.service';
 
 interface Employee {
   id: string;
@@ -49,7 +50,7 @@ export class HrEmployees implements OnInit {
 
   form: EmployeeForm = this.emptyForm();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.loadEmployees();
@@ -168,6 +169,10 @@ export class HrEmployees implements OnInit {
 
   getInitials(name: string): string {
     return name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
+  }
+
+  get isDemo(): boolean {
+  return this.authService.isDemoAccount();
   }
 
   private emptyForm(): EmployeeForm {

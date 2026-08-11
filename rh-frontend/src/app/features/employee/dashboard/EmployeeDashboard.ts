@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ChangeDetectorRef } from '@angular/core';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-employee-dashboard',
@@ -24,7 +25,7 @@ export class EmployeeDashboard implements OnInit, OnDestroy {
   private timer: any;
   private now: Date = new Date();
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {console.log('EmployeeDashboard carregado');}
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef, private authService: AuthService) {console.log('EmployeeDashboard carregado');}
 
   ngOnInit(): void {
     this.loadDashboardData();
@@ -172,6 +173,10 @@ export class EmployeeDashboard implements OnInit, OnDestroy {
       'ADJUSTED': 'Ajustado'
     };
     return map[status] || status;
+  }
+
+  get isDemo(): boolean {
+  return this.authService.isDemoAccount();
   }
 
   private formatDate(date: Date): string {

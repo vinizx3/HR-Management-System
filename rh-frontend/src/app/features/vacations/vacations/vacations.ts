@@ -149,4 +149,7 @@ export class Vacations implements OnInit{
     return end.toLocaleDateString('pt-BR');
   }
 
+  get isDemo(): boolean {
+  return this.authService.isDemoAccount();
+  }
 }

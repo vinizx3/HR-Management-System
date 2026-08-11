@@ -55,53 +55,53 @@
   </div>
 
   <div class="section-card">
-  <div class="section-header">
-    <h3 class="section-title">
-      <i class="bi bi-check2-circle me-2"></i>
-      Aprovações pendentes
-    </h3>
-    @if (pendingList.length > 0) {
-      <span class="pending-badge">{{ pendingList.length }}</span>
-    }
-  </div>
-
-  @if (isLoading) {
-    <div class="text-center py-4">
-      <div class="spinner-border text-primary" role="status"></div>
-    </div>
-  } @else if (pendingList.length === 0) {
-    <div class="empty-state">
-      <i class="bi bi-check-circle"></i>
-      <p>Nenhuma aprovação pendente</p>
-    </div>
-  } @else {
-    <div class="approval-list">
-      @for (item of pendingList; track item.id) {
-        <div class="approval-item">
-          <div class="approval-avatar">
-            {{ getInitials(item.employeeName) }}
-          </div>
-          <div class="approval-info">
-            <span class="approval-name">{{ item.employeeName }}</span>
-            <span class="approval-detail">
-              <span class="approval-type" [style.color]="item.typeColor">
-                {{ item.type }}
-              </span>
-              · {{ item.detail }}
-            </span>
-          </div>
-          <div class="approval-actions">
-            <button class="btn-approve" (click)="approve(item)">
-              <i class="bi bi-check-lg"></i>
-            </button>
-            <button class="btn-reject" (click)="reject(item)">
-              <i class="bi bi-x-lg"></i>
-            </button>
-          </div>
-        </div>
+    <div class="section-header">
+      <h3 class="section-title">
+        <i class="bi bi-check2-circle me-2"></i>
+        Aprovações pendentes
+      </h3>
+      @if (pendingList.length > 0) {
+        <span class="pending-badge">{{ pendingList.length }}</span>
       }
     </div>
-  }
-</div>
+
+    @if (isLoading) {
+      <div class="text-center py-4">
+        <div class="spinner-border text-primary" role="status"></div>
+      </div>
+    } @else if (pendingList.length === 0) {
+      <div class="empty-state">
+        <i class="bi bi-check-circle"></i>
+        <p>Nenhuma aprovação pendente</p>
+      </div>
+    } @else {
+      <div class="approval-list">
+        @for (item of pendingList; track item.id) {
+          <div class="approval-item">
+            <div class="approval-avatar">
+              {{ getInitials(item.employeeName) }}
+            </div>
+            <div class="approval-info">
+              <span class="approval-name">{{ item.employeeName }}</span>
+              <span class="approval-detail">
+                <span class="approval-type" [style.color]="item.typeColor">
+                  {{ item.type }}
+                </span>
+                · {{ item.detail }}
+              </span>
+            </div>
+            @if (!isDemo) {
+              <div class="approval-actions">
+                <button class="btn-approve" (click)="approve(item)"><i class="bi bi-check-lg"></i></button>
+                <button class="btn-reject" (click)="reject(item)"><i class="bi bi-x-lg"></i></button>
+              </div>
+            } @else {
+              <span class="text-muted small">Somente leitura</span>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
 
 </div>

@@ -473,3 +473,24 @@
     gap: 12px;
   }
 }
+
+.demo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background-color: #FEF3C7;
+  color: #92400E;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.demo-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #92400E;
+}

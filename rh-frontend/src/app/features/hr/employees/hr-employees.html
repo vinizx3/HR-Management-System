@@ -5,10 +5,12 @@
       <i class="bi bi-people-fill"></i>
       Funcionários
     </h1>
-    <button class="btn-new" (click)="openCreateModal()">
-      <i class="bi bi-plus-lg"></i>
-      Novo funcionário
-    </button>
+    @if (!isDemo) {
+      <button class="btn-new" (click)="openCreateModal()">
+        <i class="bi bi-plus-lg"></i>
+        Novo funcionário
+      </button>
+    }
   </div>
 
   <div class="toolbar">
@@ -70,13 +72,17 @@
                   </span>
                 </td>
                 <td class="td-actions">
-                  <button class="btn-icon btn-edit" (click)="openEditModal(employee)" title="Editar">
-                    <i class="bi bi-pencil-fill"></i>
-                  </button>
-                  @if (employee.active) {
-                    <button class="btn-icon btn-deactivate" (click)="confirmDeactivate(employee)" title="Desativar">
-                      <i class="bi bi-person-x-fill"></i>
+                  @if (!isDemo) {
+                    <button class="btn-icon btn-edit" (click)="openEditModal(employee)" title="Editar">
+                      <i class="bi bi-pencil-fill"></i>
                     </button>
+                    @if (employee.active) {
+                      <button class="btn-icon btn-deactivate" (click)="confirmDeactivate(employee)" title="Desativar">
+                        <i class="bi bi-person-x-fill"></i>
+                      </button>
+                    }
+                  } @else {
+                    <span class="demo-note">Somente leitura</span>
                   }
                 </td>
               </tr>

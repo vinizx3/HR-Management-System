@@ -235,4 +235,8 @@ export class Timeclock implements OnInit, OnDestroy {
     if (status === 'ADJUSTED') return 'badge-warning';
     return '';
   }
+
+  get isDemo(): boolean {
+  return this.authService.isDemoAccount();
+  }
 }

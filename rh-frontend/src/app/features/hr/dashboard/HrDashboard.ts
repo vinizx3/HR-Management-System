@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
 
 interface PendingItem {
   id: string;
@@ -32,7 +33,7 @@ export class HrDashboard implements OnInit {
   isLoading: boolean = true;
   
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.loadDashboardData();
@@ -128,5 +129,9 @@ export class HrDashboard implements OnInit {
 
   getInitials(name: string): string {
     return name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
+  }
+
+  get isDemo(): boolean {
+  return this.authService.isDemoAccount();
   }
 }

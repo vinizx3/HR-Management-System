@@ -56,7 +56,13 @@ export class HrSettings implements OnInit {
   }
 
   getRoleLabel(role: string): string {
-    return role === 'HR_MANAGER' ? 'RH Manager' : 'Funcionário';
+  const map: Record<string, string> = {
+    HR_MANAGER: 'RH Manager',
+    EMPLOYEE: 'Funcionário',
+    DEMO_ADMIN: 'Administrador (Demonstração)',
+    DEMO_EMPLOYEE: 'Funcionário (Demonstração)'
+  };
+  return map[role] || role;
   }
 
   getSystemInfo(): { label: string; value: string }[] {

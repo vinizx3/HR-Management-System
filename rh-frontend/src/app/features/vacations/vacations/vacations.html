@@ -10,7 +10,7 @@
   <div class="vacations-layout" [class.hr-layout]="isHrManager">
 
     <!-- Formulário de solicitação — só para Employee -->
-    @if (!isHrManager) {
+    @if (!isHrManager && !isDemo) {
       <div class="form-card">
         <h2 class="card-title">Solicitar Férias</h2>
 
@@ -115,7 +115,7 @@
                   </td>
                   @if (isHrManager) {
                     <td class="td-actions">
-                      @if (vacation.vacationStatus === 'PENDING') {
+                      @if (vacation.vacationStatus === 'PENDING' && !isDemo) {
                         <button class="btn-approve" (click)="approve(vacation.id)" title="Aprovar">
                           <i class="bi bi-check-lg"></i>
                         </button>
