@@ -43,11 +43,15 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                         // PUBLIC
-                        .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(
+                                "/",
+                                "/error",
+                                "/favicon.ico",
+                                "/api/auth/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
-                                "/v3/api-docs/**"
+                                "/v3/api-docs/**",
+                                "/v3/api-docs"
                         ).permitAll()
 
                         // EMPLOYEES
@@ -95,9 +99,10 @@ public class SecurityConfig {
 
         configuration.setAllowedOriginPatterns(List.of(
                 "http://localhost:4200",
-                "https://*.vercel.app"
+                "https://*.vercel.app",
+                "https://*.onrender.com"
         ));
-        configuration.setAllowedMethods(List.of("*"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
 
